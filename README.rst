@@ -1,7 +1,9 @@
 Basket-Client
 -------------
 
-Basket-Client is a small library for subscribing users to mailing lists through `Basket<https://github.com/mozilla/basket>`.
+Basket-Client is a small library for subscribing users to mailing lists through `Basket_`.
+
+.. _Basket: https://github.com/mozilla/basket
 
 Usage
 =====
