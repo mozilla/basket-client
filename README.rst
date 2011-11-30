@@ -17,6 +17,7 @@ Are you looking to integrate this on a site for email subscriptions?
 All you need to do is:
 
     import basket
+    
     basket.subscribe('<email>', '<newsletter>', <kwargs>)
 
 You can pass additional fields as keyword arguments, such as format
@@ -28,6 +29,8 @@ basket documentation_.
 Are you checking to see if a user was successfully subscribed? You can
 use the `debug-user` method like so:
 
+    import basket
+    
     basket.debug_user('<email>', '<supertoken>')
 
 And it return full details about the user. <supertoken> is a special
