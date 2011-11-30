@@ -1,28 +1,3 @@
-"""This is a client for Mozilla's email subscription service,
-basket. Basket is not a real subscription service, but it talks to a
-real one and we don't really care who/what it is.
-
-There are four API methods: subscribe, unsubscribe, user, and
-update_user. View the basket documentation [1] for details.
-
-***
-
-Are you looking to integrate this on a site for email subscriptions?
-All you need to do is:
-
-import basket
-basket.subscribe('<email>', '<newsletter>', <kwargs>)
-
-You can pass additional fields as keyword arguments, such as format
-and country. For a list of available fields, see the basket documentation [1].
-
-***
-
-Are you checking to see if a user was successfully subscribed?
-
-[1] https://github.com/mozilla/basket/tree/master/apps/news
-"""
-
 import json
 
 try:
