@@ -65,7 +65,6 @@ def subscribe(email, newsletters, **kwargs):
     should be passed as keyword arguments."""
 
     kwargs.update(email=email, newsletters=newsletters)
-    print kwargs
     return request('post', 'subscribe', data=kwargs)
 
 
