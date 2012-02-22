@@ -3,7 +3,7 @@ import json
 try:
     from django.conf import settings
     BASKET_URL = settings.BASKET_URL
-except ImportError:
+except (ImportError, AttributeError):
     BASKET_URL = 'https://basket.mozilla.com'
 
 import requests
