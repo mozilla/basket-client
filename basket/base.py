@@ -4,7 +4,7 @@ try:
     from django.conf import settings
     BASKET_URL = settings.BASKET_URL
 except (ImportError, AttributeError):
-    BASKET_URL = 'https://basket.mozilla.com'
+    BASKET_URL = 'http://localhost:8000'
 
 import requests
 
@@ -23,11 +23,6 @@ def basket_url(method, token=None):
 
 def parse_response(res):
     """Parse the result of a basket API call, raise exception on error"""
-
-    if res.error:
-        raise BasketException('Error connecting to %s: %s. Ensure that '
-                              'BASKET_URL is configured correctly in your '
-                              'settings file.' % (res.url, res.error))
 
     if res.status_code != 200:
         raise BasketException('%s request returned from basket: %s' %
@@ -50,10 +45,13 @@ def request(method, action, data=None, token=None, params=None):
         if '__iter__' in data['newsletters']:
             data['newsletters'] = ','.join(data['newsletters'])
 
-    res = requests.request(method,
-                           basket_url(action, token),
-                           data=data,
-                           params=params)
+    try:
+        res = requests.request(method,
+                               basket_url(action, token),
+                               data=data,
+                               params=params)
+    except requests.exceptions.ConnectionError:
+        raise BasketException("Error connecting to basket")
     return parse_response(res)
 
 
