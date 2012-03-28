@@ -1,1 +1,1 @@
-from base import subscribe, unsubscribe, user, update_user, debug_user
+from base import subscribe, unsubscribe, user, update_user, debug_user, BasketException
