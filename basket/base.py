@@ -49,7 +49,8 @@ def request(method, action, data=None, token=None, params=None):
         res = requests.request(method,
                                basket_url(action, token),
                                data=data,
-                               params=params)
+                               params=params,
+                               timeout=10)
     except requests.exceptions.ConnectionError:
         raise BasketException("Error connecting to basket")
     return parse_response(res)
