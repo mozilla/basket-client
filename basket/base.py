@@ -67,7 +67,7 @@ def subscribe(email, newsletters, **kwargs):
     return request('post', 'subscribe', data=kwargs)
 
 
-def subscribe_sms(mobile_number, msg_name, optin=False):
+def send_sms(mobile_number, msg_name, optin=False):
     """
     Send SMS message `msg_name` to `mobile_number` and optionally add the
     number to a list for future messages.
