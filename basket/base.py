@@ -67,6 +67,18 @@ def subscribe(email, newsletters, **kwargs):
     return request('post', 'subscribe', data=kwargs)
 
 
+def subscribe_sms(mobile_number, msg_name, optin=False):
+    """
+    Send SMS message `msg_name` to `mobile_number` and optionally add the
+    number to a list for future messages.
+    """
+    return request('post', 'subscribe_sms', data={
+        'mobile_number': mobile_number,
+        'msg_name': msg_name,
+        'optin': 'Y' if optin else 'N',
+    })
+
+
 def unsubscribe(token, email, newsletters=None, optout=False):
     """Unsubscribe an email from certain newsletters, or all of them
     if `optout` is passed. Requires a token."""

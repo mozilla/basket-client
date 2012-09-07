@@ -3,15 +3,15 @@ from setuptools import setup, find_packages
 
 setup(
     name='basket',
-    version='0.2.0',
+    version='0.3.0',
     description="A Python client for Mozilla's basket service",
     long_description=open('README.rst').read(),
     author='Michael Kelly',
     author_email='mkelly@mozilla.com',
-    license='GPL',
+    license='BSD',
     packages=find_packages(exclude=['ez_setup']),
     install_requires=['requests'],
-    url='https://github.com/Osmose/basket-client',
+    url='https://github.com/mozilla/basket-client',
     include_package_data=True,
     classifiers=[
         'Intended Audience :: Developers',
