@@ -18,6 +18,5 @@ setup(
         'Natural Language :: English',
         'Topic :: Software Development :: Libraries',
         ],
-    keywords=['mozilla', 'basket'],
-    **extra_setup
+    keywords=['mozilla', 'basket']
 )
