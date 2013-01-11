@@ -4,7 +4,7 @@ from base import (send_sms, subscribe, unsubscribe, user,
                   update_user, debug_user, BasketException)
 
 
-VERSION = (0, 3, 0)
+VERSION = (0, 3, 1)
 
 __version__ = '.'.join(map(str, VERSION))
 __author__ = 'Michael Kelly and contributors'
