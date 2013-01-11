@@ -1,12 +1,16 @@
 import json
+import os
 
 try:
     from django.conf import settings
-    BASKET_URL = settings.BASKET_URL
 except (ImportError, AttributeError):
-    BASKET_URL = 'http://localhost:8000'
+    settings = None
 
 import requests
+
+
+BASKET_URL = getattr(settings, 'BASKET_URL',
+                     os.getenv('BASKET_URL', 'http://localhost:8000'))
 
 
 class BasketException(Exception):
