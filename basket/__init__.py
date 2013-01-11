@@ -8,6 +8,6 @@ VERSION = (0, 3, 0)
 
 __version__ = '.'.join(map(str, VERSION))
 __author__ = 'Michael Kelly and contributors'
-__contact__ = 'mkelly@mozilla.com'
+__contact__ = 'dev-mozilla-org@lists.mozilla.org'
 __homepage__ = 'https://github.com/mozilla/basket-client'
 __license__ = 'BSD'
