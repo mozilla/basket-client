@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='basket-client',
-    version='0.3.1',
+    version='0.3.2',
     description="A Python client for Mozilla's basket service.",
     long_description=open('README.rst').read(),
     author='Michael Kelly and contributors',
