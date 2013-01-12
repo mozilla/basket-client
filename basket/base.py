@@ -6,11 +6,7 @@ try:
 except (ImportError, AttributeError):
     settings = None
 
-try:
-    import requests
-except ImportError:
-    # might not be available at setup time.
-    requests = None
+import requests
 
 
 BASKET_URL = getattr(settings, 'BASKET_URL',

@@ -1,19 +1,17 @@
 from setuptools import setup, find_packages
 
-import basket as distmeta
-
 
 setup(
     name='basket-client',
-    version=distmeta.__version__,
-    description=distmeta.__doc__,
+    version='0.3.1',
+    description="A Python client for Mozilla's basket service.",
     long_description=open('README.rst').read(),
-    author=distmeta.__author__,
-    author_email=distmeta.__contact__,
-    license=distmeta.__license__,
+    author='Michael Kelly and contributors',
+    author_email='dev-mozilla-org@lists.mozilla.org',
+    license='BSD',
     packages=find_packages(exclude=['ez_setup']),
     install_requires=['requests'],
-    url=distmeta.__homepage__,
+    url='https://github.com/mozilla/basket-client',
     include_package_data=True,
     classifiers=[
         "Development Status :: 5 - Production/Stable",
