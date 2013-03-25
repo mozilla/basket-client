@@ -122,3 +122,9 @@ def debug_user(email, supertoken):
     return request('get', 'debug-user',
                    params={'email': email,
                            'supertoken': supertoken})
+
+def get_newsletters():
+    """Returns data about the newsletters that basket knows about.
+    Format is a list of dictionaries.
+    """
+    return request('get', 'newsletters')['newsletters']
