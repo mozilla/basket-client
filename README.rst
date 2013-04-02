@@ -1,5 +1,6 @@
+=============
 Basket Client
--------------
+=============
 
 This is a client for Mozilla's email subscription service,
 basket_. Basket is not a real subscription service, but it talks to a
@@ -11,7 +12,7 @@ update_user. View the basket documentation_ for details.
 .. _basket: https://github.com/mozilla/basket
 
 Usage
------
+=====
 
 Are you looking to integrate this on a site for email subscriptions?
 All you need to do is:
@@ -51,3 +52,12 @@ value in a `BASKET_URL` environment variable. The default is
 `http://localhost:8000`.
 
 .. _Django: https://www.djangoproject.com/
+
+Change Log
+==========
+
+v0.3.3
+------
+
+* Add get_newsletters API method for information on currently available newsletters.
+* Handle Timeout exceptions from requests.
