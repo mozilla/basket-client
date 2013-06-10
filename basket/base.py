@@ -46,7 +46,7 @@ def request(method, action, data=None, token=None, params=None):
 
     # newsletters should be comma-delimited
     if data and 'newsletters' in data:
-        if '__iter__' in data['newsletters']:
+        if not isinstance(data['newsletters'], basestring):
             data['newsletters'] = ','.join(data['newsletters'])
 
     try:
