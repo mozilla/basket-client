@@ -53,8 +53,20 @@ value in a `BASKET_URL` environment variable. The default is
 
 .. _Django: https://www.djangoproject.com/
 
+Tests
+=====
+
+To run tests::
+
+    python setup.py test
+
 Change Log
 ==========
+
+v0.3.5
+------
+
+* Add tests
 
 v0.3.4
 ------

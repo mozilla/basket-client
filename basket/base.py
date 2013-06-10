@@ -1,10 +1,18 @@
 import json
 import os
 
+# Use Django settings for BASKET_URL if available, but fall back to
+# env var or default if not. This lets us test without all the setup
+# that we'd otherwise need for Django.
 try:
     from django.conf import settings
 except (ImportError, AttributeError):
+    # Django not installed
     settings = None
+else:
+    if not settings.configured:
+        # Django installed but not initialized
+        settings = None
 
 import requests
 
@@ -24,6 +32,7 @@ def basket_url(method, token=None):
     token = '%s/' % token if token else ''
 
     return ('%s/news/%s/%s' % (BASKET_URL, method, token))
+
 
 def parse_response(res):
     """Parse the result of a basket API call, raise exception on error"""
@@ -122,6 +131,7 @@ def debug_user(email, supertoken):
     return request('get', 'debug-user',
                    params={'email': email,
                            'supertoken': supertoken})
+
 
 def get_newsletters():
     """Returns data about the newsletters that basket knows about.
