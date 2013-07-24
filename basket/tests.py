@@ -4,8 +4,8 @@ from unittest import TestCase
 from requests.exceptions import ConnectionError, Timeout
 from mock import Mock, patch
 
-from basket import (BasketException, debug_user, get_newsletters, request,
-                    subscribe, unsubscribe, update_user, user)
+from basket import (BasketException, confirm, debug_user, get_newsletters,
+                    request, subscribe, unsubscribe, update_user, user)
 from basket.base import basket_url, parse_response
 
 
@@ -28,9 +28,14 @@ class TestBasketClient(TestCase):
 
     def test_response_not_200(self):
         """parse_response() raises exception on non-200 status code"""
+        # and puts the status code on the exception
         res = Mock(status_code=666)
-        with self.assertRaises(BasketException):
+        try:
             parse_response(res)
+        except BasketException as e:
+            self.assertEqual(666, e.status_code)
+        else:
+            self.fail("parse_response should have raised BasketException")
 
     def test_response_error(self):
         """parse_response() raises exception on status=error"""
@@ -157,7 +162,6 @@ class TestBasketClient(TestCase):
         expected_kwargs['email'] = email
         expected_kwargs['newsletters'] = newsletters
         with patch('basket.base.request', autospec=True) as request_call:
-            request_call.return_value = Mock()
             result = subscribe(email, newsletters, **kwargs)
 
         request_call.assert_called_with('post', 'subscribe',
@@ -177,7 +181,6 @@ class TestBasketClient(TestCase):
             'newsletters': newsletters,
         }
         with patch('basket.base.request', autospec=True) as request_call:
-            request_call.return_value = Mock()
             result = unsubscribe(token, email, newsletters, optout)
 
         request_call.assert_called_with('post', 'unsubscribe',
@@ -199,7 +202,6 @@ class TestBasketClient(TestCase):
             'optout': 'Y'
         }
         with patch('basket.base.request', autospec=True) as request_call:
-            request_call.return_value = Mock()
             result = unsubscribe(token, email, newsletters, optout)
 
         request_call.assert_called_with('post', 'unsubscribe',
@@ -226,7 +228,6 @@ class TestBasketClient(TestCase):
         """
         token = "TOKEN"
         with patch('basket.base.request', autospec=True) as request_call:
-            request_call.return_value = Mock()
             result = user(token)
         request_call.assert_called_with('get', 'user', token=token)
         self.assertEqual(request_call.return_value, result)
@@ -241,7 +242,6 @@ class TestBasketClient(TestCase):
             'two': 200,
         }
         with patch('basket.base.request', autospec=True) as request_call:
-            request_call.return_value = Mock()
             result = update_user(token, **kwargs)
         request_call.assert_called_with('post', 'user', data=kwargs,
                                         token=token)
@@ -255,7 +255,6 @@ class TestBasketClient(TestCase):
         supertoken = "STOKEN"
         params = {'email': email, 'supertoken': supertoken}
         with patch('basket.base.request', autospec=True) as request_call:
-            request_call.return_value = Mock()
             result = debug_user(email, supertoken)
         request_call.assert_called_with('get', 'debug-user', params=params)
         self.assertEqual(request_call.return_value, result)
@@ -270,3 +269,13 @@ class TestBasketClient(TestCase):
             result = get_newsletters()
         request_call.assert_called_with('get', 'newsletters')
         self.assertEqual('FOO BAR', result)
+
+    def test_confirm(self):
+        """
+        confirm() passes the expected args to request, and returns the result.
+        """
+        token = "TOKEN"
+        with patch('basket.base.request', autospec=True) as request_call:
+            result = confirm(token)
+        request_call.assert_called_with('post', 'confirm', token=token)
+        self.assertEqual(request_call.return_value, result)
