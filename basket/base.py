@@ -22,7 +22,10 @@ BASKET_URL = getattr(settings, 'BASKET_URL',
 
 
 class BasketException(Exception):
-    pass
+    def __init__(self, *args, **kwargs):
+        # Store status_code on exception if available, else 0
+        self.status_code = kwargs.pop('status_code', 0)
+        super(BasketException, self).__init__(*args, **kwargs)
 
 
 def basket_url(method, token=None):
@@ -39,7 +42,8 @@ def parse_response(res):
 
     if res.status_code != 200:
         raise BasketException('%s request returned from basket: %s' %
-                              (res.status_code, res.content))
+                              (res.status_code, res.content),
+                              status_code=res.status_code)
 
     # Parse the json and check for errors
     result = json.loads(res.content)
@@ -72,6 +76,13 @@ def request(method, action, data=None, token=None, params=None):
 
 
 # Public API methods
+
+def confirm(token):
+    """
+    Confirm a user.  token is required.
+    """
+    return request('post', 'confirm', token=token)
+
 
 def subscribe(email, newsletters, **kwargs):
     """Subscribe an email through basket to `newsletters`, which can
