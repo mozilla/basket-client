@@ -17,8 +17,10 @@ update_user. View the basket documentation_ for details.
 Usage
 =====
 
-Are you looking to integrate this on a site for email subscriptions?
+Do you want to subscribe people to Mozilla's newsletters?
 All you need to do is:
+
+.. code:: python
 
     import basket
 
@@ -28,16 +30,18 @@ You can pass additional fields as keyword arguments, such as format
 and country. For a list of available fields and newsletters, see the
 basket documentation_.
 
-.. _documentation: https://github.com/mozilla/basket/tree/master/apps/news#readme
+.. _documentation: https://github.com/mozilla/basket/#readme
 
 Are you checking to see if a user was successfully subscribed? You can
-use the `debug-user` method like so:
+use the ``lookup_user`` method like so:
+
+.. code:: python
 
     import basket
 
-    basket.debug_user('<email>', '<supertoken>')
+    basket.lookup_user(email='<email>', api_key='<api_key>')
 
-And it return full details about the user. <supertoken> is a special
+And it will return full details about the user. <api_key> is a special
 token that grants you admin access to the data. Check with `the mozilla.org
 developers`_ to get it.
 
@@ -47,12 +51,20 @@ Settings
 ========
 
 BASKET_URL
-  URL to basket server, e.g. `https://basket.mozilla.com`
+  | URL to basket server, e.g. ``https://basket.mozilla.org``
+  | Default: ``http://localhost:8000``
 
-If you're using Django_ you can simply add this setting to your
-`settings.py` file. Otherwise basket-client will look for this
-value in a `BASKET_URL` environment variable. The default is
-`http://localhost:8000`.
+BASKET_API_KEY
+  The API Key granted to you by `the mozilla.org developers`_ so that you can
+  use the ``lookup_user`` method with an email address.
+
+BASKET_TIMEOUT
+  | The number of seconds basket client should wait before giving up on the request.
+  | Default: ``10``
+
+If you're using Django_ you can simply add these settings to your
+``settings.py`` file. Otherwise basket-client will look for these
+values in an environment variable of the same name.
 
 .. _Django: https://www.djangoproject.com/
 
@@ -65,6 +77,18 @@ To run tests::
 
 Change Log
 ==========
+
+v0.3.7
+------
+
+* Add the ``lookup_user`` function.
+* Add the ``BASKET_API_KEY`` setting.
+* Add the ``BASKET_TIMEOUT`` setting.
+
+v0.3.6
+------
+
+* Add the ``confirm`` function.
 
 v0.3.5
 ------
