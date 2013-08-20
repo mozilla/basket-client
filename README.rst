@@ -9,6 +9,9 @@ real one and we don't really care who/what it is.
 There are four API methods: subscribe, unsubscribe, user, and
 update_user. View the basket documentation_ for details.
 
+.. image:: https://travis-ci.org/mozilla/basket-client.png
+    :target: https://travis-ci.org/mozilla/basket-client
+
 .. _basket: https://github.com/mozilla/basket
 
 Usage

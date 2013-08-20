@@ -1,5 +1,4 @@
 import json
-from unittest import TestCase
 
 from requests.exceptions import ConnectionError, Timeout
 from mock import Mock, patch
@@ -9,11 +8,16 @@ from basket import (BasketException, confirm, debug_user, get_newsletters,
                     update_user, user)
 from basket.base import basket_url, parse_response
 
+try:
+    import unittest2 as unittest
+except ImportError:
+    import unittest
+
 
 # Warning: there are two request() methods, one in basket-client and
 # one in the requests library. Pay attention, it's very confusing.
 
-class TestBasketClient(TestCase):
+class TestBasketClient(unittest.TestCase):
 
     def test_basket_url_no_token(self):
         """Form basket URL properly when no token used"""
