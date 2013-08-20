@@ -290,5 +290,5 @@ class TestBasketClient(TestCase):
         with patch('basket.base.request', autospec=True) as mock_request:
             result = send_recovery_message(email)
         data = {'email': email}
-        mock_request.assert_called_with('post', 'recovery', data=data)
+        mock_request.assert_called_with('post', 'recover', data=data)
         self.assertEqual(mock_request.return_value, result)
