@@ -27,5 +27,5 @@ setup(
     ],
     keywords=['mozilla', 'basket'],
     test_suite="basket.tests.TestBasketClient",
-    tests_require=['mock==1.0.1'],
+    tests_require=['mock==1.0.1', 'unittest2==0.5.1'],
 )
