@@ -28,6 +28,10 @@ class BasketException(Exception):
         super(BasketException, self).__init__(*args, **kwargs)
 
 
+class BasketNetworkException(BasketException):
+    """Used on error connecting to basket"""
+
+
 def basket_url(method, token=None):
     """Form a basket API url. If the request requires a user-specific
     token, it is suffixed as the last part of the URL."""
@@ -69,9 +73,9 @@ def request(method, action, data=None, token=None, params=None):
                                params=params,
                                timeout=10)
     except requests.exceptions.ConnectionError:
-        raise BasketException("Error connecting to basket")
+        raise BasketNetworkException("Error connecting to basket")
     except requests.exceptions.Timeout:
-        raise BasketException("Timeout connecting to basket")
+        raise BasketNetworkException("Timeout connecting to basket")
     return parse_response(res)
 
 
@@ -142,6 +146,11 @@ def debug_user(email, supertoken):
     return request('get', 'debug-user',
                    params={'email': email,
                            'supertoken': supertoken})
+
+
+def send_recovery_message(email):
+    """Send recovery message for this email"""
+    return request('post', 'recover', data={'email': email})
 
 
 def get_newsletters():

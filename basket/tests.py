@@ -5,7 +5,8 @@ from requests.exceptions import ConnectionError, Timeout
 from mock import Mock, patch
 
 from basket import (BasketException, confirm, debug_user, get_newsletters,
-                    request, subscribe, unsubscribe, update_user, user)
+                    request, send_recovery_message, subscribe, unsubscribe,
+                    update_user, user)
 from basket.base import basket_url, parse_response
 
 
@@ -279,3 +280,15 @@ class TestBasketClient(TestCase):
             result = confirm(token)
         request_call.assert_called_with('post', 'confirm', token=token)
         self.assertEqual(request_call.return_value, result)
+
+    def test_send_recovery_email(self):
+        """
+        send_recovery_email() passes the expected args to request,
+        and returns the result.
+        """
+        email = "dude@example.com"
+        with patch('basket.base.request', autospec=True) as mock_request:
+            result = send_recovery_message(email)
+        data = {'email': email}
+        mock_request.assert_called_with('post', 'recovery', data=data)
+        self.assertEqual(mock_request.return_value, result)
