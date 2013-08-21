@@ -1,12 +1,12 @@
 import json
 
 from requests.exceptions import ConnectionError, Timeout
-from mock import Mock, patch
+from mock import ANY, Mock, patch
 
 from basket import (BasketException, confirm, debug_user, get_newsletters,
-                    request, send_recovery_message, subscribe, unsubscribe,
-                    update_user, user)
-from basket.base import basket_url, parse_response
+                    lookup_user, request, send_recovery_message, subscribe,
+                    unsubscribe, update_user, user)
+from basket.base import basket_url, get_env_or_setting, parse_response
 
 try:
     import unittest2 as unittest
@@ -73,7 +73,8 @@ class TestBasketClient(unittest.TestCase):
                              token=token, params="PARAMS")
 
         request_call.assert_called_with(method, url, data="DATA",
-                                        params="PARAMS", timeout=10)
+                                        params="PARAMS", headers=None,
+                                        timeout=ANY)
         self.assertEqual(response_data, result)
 
     def test_request_newsletters_string(self):
@@ -93,7 +94,8 @@ class TestBasketClient(unittest.TestCase):
                              token=token, params="PARAMS")
 
         request_call.assert_called_with(method, url, data=input_data,
-                                        params="PARAMS", timeout=10)
+                                        params="PARAMS", headers=None,
+                                        timeout=ANY)
         self.assertEqual(content, result)
 
     def test_request_newsletters_non_string(self):
@@ -116,7 +118,8 @@ class TestBasketClient(unittest.TestCase):
                              token=token, params="PARAMS")
 
         request_call.assert_called_with(method, url, data=expected_input_data,
-                                        params="PARAMS", timeout=10)
+                                        params="PARAMS", headers=None,
+                                        timeout=ANY)
         self.assertEqual(response_data, result)
 
     def test_request_conn_error(self):
@@ -296,3 +299,64 @@ class TestBasketClient(unittest.TestCase):
         data = {'email': email}
         mock_request.assert_called_with('post', 'recover', data=data)
         self.assertEqual(mock_request.return_value, result)
+
+    @patch('basket.base.request')
+    def test_lookup_user_token(self, mock_request):
+        """Calling lookup_user with a token should not require an API key."""
+        lookup_user(token='TOKEN')
+        mock_request.assert_called_with('get', 'lookup-user',
+                                        params={'token': 'TOKEN'})
+
+    @patch('basket.base.request')
+    def test_lookup_user_email(self, mock_request):
+        """Calling lookup_user with email and api key should succeed."""
+        api_key = 'There is only XUL!'
+        email = 'dana@example.com'
+        lookup_user(email=email, api_key=api_key)
+        mock_request.assert_called_with('get', 'lookup-user',
+                                        params={'email': email},
+                                        headers={'x-api-key': api_key})
+
+    @patch('basket.base.request')
+    def test_lookup_user_email_setting(self, mock_request):
+        """Calling lookup_user with email and api key setting should succeed."""
+        api_key = 'There is only XUL!'
+        email = 'dana@example.com'
+        with patch('basket.base.BASKET_API_KEY', api_key):
+            lookup_user(email=email)
+        mock_request.assert_called_with('get', 'lookup-user',
+                                        params={'email': email},
+                                        headers={'x-api-key': api_key})
+
+    @patch('basket.base.request')
+    def test_lookup_user_no_api_key(self, mock_request):
+        """Calling lookup_user with email and no api key raises an exception."""
+        with self.assertRaises(BasketException):
+            lookup_user(email='dana@example.com')
+
+        self.assertFalse(mock_request.called)
+
+    @patch('basket.base.request')
+    def test_lookup_user_no_args(self, mock_request):
+        """Calling lookup_user with no email or token raises an exception."""
+        with self.assertRaises(BasketException):
+            lookup_user()
+
+        self.assertFalse(mock_request.called)
+
+    @patch('basket.base.settings',
+           type('X', (object,), {'TESTING_SETTINGS': True}))
+    def test_gets_setting(self):
+        """Should return the setting if it exists."""
+        self.assertEqual(get_env_or_setting('TESTING_SETTINGS'), True)
+        self.assertEqual(get_env_or_setting('DOES_NOT_EXIST'), None)
+
+    def test_get_setting_from_env(self):
+        """Should always return the value from the env if it exists."""
+        self.assertEqual(get_env_or_setting('TESTING_SETTINGS'), None)
+        with patch('basket.base.settings',
+                   type('X', (object,), {'TESTING_SETTINGS': 'DUDE'})):
+            self.assertEqual(get_env_or_setting('TESTING_SETTINGS'), 'DUDE')
+            with patch.dict('os.environ', {'TESTING_SETTINGS': 'WALTER'}):
+                self.assertEqual(get_env_or_setting('TESTING_SETTINGS'),
+                                 'WALTER')

@@ -17,8 +17,14 @@ else:
 import requests
 
 
-BASKET_URL = getattr(settings, 'BASKET_URL',
-                     os.getenv('BASKET_URL', 'http://localhost:8000'))
+def get_env_or_setting(name, default=None):
+    """Return the value of name from an env var, a Django setting, or default"""
+    return os.getenv(name, getattr(settings, name, default))
+
+
+BASKET_URL = get_env_or_setting('BASKET_URL', 'http://localhost:8000')
+BASKET_API_KEY = get_env_or_setting('BASKET_API_KEY', '')
+BASKET_TIMEOUT = get_env_or_setting('BASKET_TIMEOUT', 10)
 
 
 class BasketException(Exception):
@@ -58,7 +64,7 @@ def parse_response(res):
     return result
 
 
-def request(method, action, data=None, token=None, params=None):
+def request(method, action, data=None, token=None, params=None, headers=None):
     """Call the basket API with the supplied http method and data."""
 
     # newsletters should be comma-delimited
@@ -71,7 +77,8 @@ def request(method, action, data=None, token=None, params=None):
                                basket_url(action, token),
                                data=data,
                                params=params,
-                               timeout=10)
+                               headers=headers,
+                               timeout=BASKET_TIMEOUT)
     except requests.exceptions.ConnectionError:
         raise BasketNetworkException("Error connecting to basket")
     except requests.exceptions.Timeout:
@@ -137,6 +144,23 @@ def update_user(token, **kwargs):
     newsletters."""
 
     return request('post', 'user', data=kwargs, token=token)
+
+
+def lookup_user(email=None, token=None, api_key=None):
+    """Get a user's information using an API key or the user's token."""
+    # prefer token
+    if token:
+        return request('get', 'lookup-user', params={'token': token})
+
+    if email:
+        api_key = api_key or BASKET_API_KEY
+        if not api_key:
+            raise BasketException('API key required for email lookup.')
+        return request('get', 'lookup-user',
+                       params={'email': email},
+                       headers={'x-api-key': api_key})
+
+    raise BasketException('Either token or email are required.')
 
 
 def debug_user(email, supertoken):
