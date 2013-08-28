@@ -11,6 +11,8 @@ update_user. View the basket documentation_ for details.
 
 .. image:: https://travis-ci.org/mozilla/basket-client.png
     :target: https://travis-ci.org/mozilla/basket-client
+.. image:: https://coveralls.io/repos/mozilla/basket-client/badge.png?branch=master
+    :target: https://coveralls.io/r/mozilla/basket-client
 .. image:: https://pypip.in/v/basket-client/badge.png
     :target: https://crate.io/packages/basket-client
 
