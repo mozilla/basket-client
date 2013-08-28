@@ -4,9 +4,13 @@ python:
   - "2.7"
 before_script:
   - flake8 --ignore=E121,E123,E124,E125,E126,E127,E128,E501 basket
-script: python setup.py test
+script: coverage run setup.py test
 install:
   - pip install -r test-requirements.txt --use-mirrors
+after_success:
+  # Report coverage results to coveralls.io
+  - pip install coveralls --use-mirrors
+  - coveralls
 notifications:
   irc:
     channels:

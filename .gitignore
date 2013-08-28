@@ -2,4 +2,5 @@
 *.sw[po]
 *~
 *.egg-info
+.coverage
 dist
