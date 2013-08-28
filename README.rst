@@ -11,8 +11,17 @@ update_user. View the basket documentation_ for details.
 
 .. image:: https://travis-ci.org/mozilla/basket-client.png
     :target: https://travis-ci.org/mozilla/basket-client
+.. image:: https://pypip.in/v/basket-client/badge.png
+    :target: https://crate.io/packages/basket-client
 
 .. _basket: https://github.com/mozilla/basket
+
+Installation
+============
+
+.. code:: bash
+
+    $ pip install basket-client
 
 Usage
 =====
@@ -71,9 +80,11 @@ values in an environment variable of the same name.
 Tests
 =====
 
-To run tests::
+To run tests:
 
-    python setup.py test
+.. code:: bash
+
+    $ python setup.py test
 
 Change Log
 ==========
