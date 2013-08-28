@@ -2,3 +2,4 @@ mock
 requests
 flake8
 unittest2
+coverage
