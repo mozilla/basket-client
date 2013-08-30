@@ -6,8 +6,7 @@ This is a client for Mozilla's email subscription service,
 basket_. Basket is not a real subscription service, but it talks to a
 real one and we don't really care who/what it is.
 
-There are four API methods: subscribe, unsubscribe, user, and
-update_user. View the basket documentation_ for details.
+There are multiple API methods. View the basket documentation_ for details.
 
 .. image:: https://travis-ci.org/mozilla/basket-client.png
     :target: https://travis-ci.org/mozilla/basket-client
@@ -65,6 +64,8 @@ BASKET_URL
   | URL to basket server, e.g. ``https://basket.mozilla.org``
   | Default: ``http://localhost:8000``
 
+  The URL must not end with ``/``. Basket-client will add ``/`` if needed.
+
 BASKET_API_KEY
   The API Key granted to you by `the mozilla.org developers`_ so that you can
   use the ``lookup_user`` method with an email address.
@@ -90,6 +91,11 @@ To run tests:
 
 Change Log
 ==========
+
+v0.3.8
+------
+
+* Add the ``start_email_change`` and ``confirm_email_change`` functions.
 
 v0.3.7
 ------

@@ -182,3 +182,23 @@ def get_newsletters():
     Format is a list of dictionaries.
     """
     return request('get', 'newsletters')['newsletters']
+
+
+def start_email_change(token, new_email):
+    """
+    Start the process of changing the email address for a user.
+
+    :param token: User's subscriber token
+    :param new_email: Desired new email address
+    """
+    return request('post', 'start-email-change', data={'email': new_email}, token=token)
+
+
+def confirm_email_change(change_key):
+    """
+    Confirm email change.
+
+    Call this when a user hits the link they were given to confirm changing
+    their email. The link includes the change_key in it.
+    """
+    return request('post', 'confirm-email-change', token=change_key)
