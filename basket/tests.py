@@ -3,8 +3,9 @@ import json
 from requests.exceptions import ConnectionError, Timeout
 from mock import ANY, Mock, patch
 
-from basket import (BasketException, confirm, debug_user, get_newsletters,
-                    lookup_user, request, send_recovery_message, subscribe,
+from basket import (BasketException, confirm, confirm_email_change, debug_user, get_newsletters,
+                    lookup_user, request, send_recovery_message,
+                    start_email_change, subscribe,
                     unsubscribe, update_user, user)
 from basket.base import basket_url, get_env_or_setting, parse_response
 
@@ -360,3 +361,24 @@ class TestBasketClient(unittest.TestCase):
             with patch.dict('os.environ', {'TESTING_SETTINGS': 'WALTER'}):
                 self.assertEqual(get_env_or_setting('TESTING_SETTINGS'),
                                  'WALTER')
+
+    def test_start_email_change(self):
+        """
+        start_email_change() passes the expected args to request, and returns the result.
+        """
+        token = "TOKEN"
+        new_email = "NEW EMAIL"
+        with patch('basket.base.request', autospec=True) as request_call:
+            result = start_email_change(token, new_email)
+        request_call.assert_called_with('post', 'start-email-change', token=token, data={'email': new_email})
+        self.assertEqual(request_call.return_value, result)
+
+    def test_confirm_email_change(self):
+        """
+        confirm_email_change() passes the expected args to request, and returns the result.
+        """
+        change_key = "CHANGE KEY"
+        with patch('basket.base.request', autospec=True) as request_call:
+            result = confirm_email_change(change_key)
+        request_call.assert_called_with('post', 'confirm-email-change', token=change_key)
+        self.assertEqual(request_call.return_value, result)
