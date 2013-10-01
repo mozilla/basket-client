@@ -45,8 +45,9 @@ class TestBasketClient(unittest.TestCase):
 
     def test_response_error(self):
         """parse_response() raises exception on status=error"""
-        content = json.dumps({'status': 'error', 'desc': 'ERROR'})
-        res = Mock(status_code=200, content=content)
+        content = json.dumps({'status': 'error', 'desc': 'ERROR', 'code': 3})
+        res = Mock(status_code=200, content=content,
+                   content_type='application/json')
         with self.assertRaises(BasketException):
             parse_response(res)
 
@@ -54,7 +55,8 @@ class TestBasketClient(unittest.TestCase):
         """parse_response() returns parsed response content if no error"""
         data = {u'status': u'ok', u'foo': u'bar'}
         content = json.dumps(data)
-        res = Mock(status_code=200, content=content)
+        res = Mock(status_code=200, content=content,
+                   content_type='application/json')
         result = parse_response(res)
         self.assertEqual(data, result)
 
@@ -69,7 +71,8 @@ class TestBasketClient(unittest.TestCase):
         with patch('basket.base.requests.request', autospec=True) \
                 as request_call:
             request_call.return_value = Mock(status_code=200,
-                                             content=json.dumps(response_data))
+                                             content=json.dumps(response_data),
+                                             content_type='application/json')
             result = request(method, action, data="DATA",
                              token=token, params="PARAMS")
 
@@ -90,7 +93,8 @@ class TestBasketClient(unittest.TestCase):
         with patch('basket.base.requests.request', autospec=True) \
                 as request_call:
             request_call.return_value = Mock(status_code=200,
-                                             content=json.dumps(content))
+                                             content=json.dumps(content),
+                                             content_type='application/json')
             result = request(method, action, data=input_data,
                              token=token, params="PARAMS")
 
@@ -114,7 +118,8 @@ class TestBasketClient(unittest.TestCase):
         with patch('basket.base.requests.request', autospec=True) \
                 as request_call:
             request_call.return_value = Mock(status_code=200,
-                                             content=json.dumps(response_data))
+                                             content=json.dumps(response_data),
+                                             content_type='application/json')
             result = request(method, action, data=input_data,
                              token=token, params="PARAMS")
 

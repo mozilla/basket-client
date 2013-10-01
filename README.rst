@@ -92,6 +92,11 @@ To run tests:
 Change Log
 ==========
 
+v0.3.9
+------
+
+* Add numeric error codes.
+
 v0.3.8
 ------
 
