@@ -57,6 +57,43 @@ developers`_ to get it.
 
 .. _the mozilla.org developers: mailto:dev-mozilla-org@lists.mozilla.org
 
+On most errors, BasketException will be raised. The ``code`` attribute on
+the exception object will contain a numeric code indicating the problem,
+and the ``desc`` attribute will have a short English description of it.
+(Use the ``code`` attribute to determine which error happened, but you
+can use ``desc`` in log messages etc.)
+
+Example::
+
+    from basket import errors, some_basket_call
+
+    try:
+        rc = some_basket_call(args)
+    except BasketError as e:
+        if e.code == errors.BASKET_INVALID_EMAIL:
+            print "That email address was not valid"
+        else:
+            log.exception("Some basket error (%s)" % e.desc)
+
+The error codes are defined in ``basket.errors``.  New ones can be added anytime,
+but to start with, the errors are::
+
+    BASKET_NETWORK_FAILURE
+    BASKET_INVALID_EMAIL
+    BASKET_UNKNOWN_EMAIL
+    BASKET_UNKNOWN_TOKEN
+    BASKET_USAGE_ERROR
+    BASKET_EMAIL_PROVIDER_AUTH_FAILURE
+    BASKET_AUTH_ERROR
+    BASKET_SSL_REQUIRED
+    BASKET_INVALID_NEWSLETTER
+    BASKET_INVALID_LANGUAGE
+
+    # If you get this, report it as a bug so we can add a more specific
+    # error code.
+    BASKET_UNKNOWN_ERROR
+
+
 Settings
 ========
 
