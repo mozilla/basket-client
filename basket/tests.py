@@ -3,8 +3,8 @@ import json
 from requests.exceptions import ConnectionError, Timeout
 from mock import ANY, Mock, patch
 
-from basket import (BasketException, confirm, confirm_email_change, debug_user, get_newsletters,
-                    lookup_user, request, send_recovery_message,
+from basket import (BasketException, confirm, confirm_email_change, debug_user,
+                    errors, get_newsletters, lookup_user, request, send_recovery_message,
                     start_email_change, subscribe,
                     unsubscribe, update_user, user)
 from basket.base import basket_url, get_env_or_setting, parse_response
@@ -45,16 +45,35 @@ class TestBasketClient(unittest.TestCase):
 
     def test_response_error(self):
         """parse_response() raises exception on status=error"""
-        content = json.dumps({'status': 'error', 'desc': 'ERROR'})
-        res = Mock(status_code=200, content=content)
-        with self.assertRaises(BasketException):
+        content = json.dumps({'status': 'error', 'desc': 'ERROR', 'code': 3})
+        res = Mock(status_code=200, content=content,
+                   content_type='application/json')
+        try:
             parse_response(res)
+        except BasketException as e:
+            self.assertEqual(3, e.code)
+        else:
+            self.fail("parse_response should have raised BasketException")
+
+    def test_response_error_no_code(self):
+        """if response has no code, and is error, then the code in
+        the exception is the UNKNOWN code"""
+        content = json.dumps({'status': 'error', 'desc': 'ERROR'})
+        res = Mock(status_code=200, content=content,
+                   content_type='application/json')
+        try:
+            parse_response(res)
+        except BasketException as e:
+            self.assertEqual(errors.BASKET_UNKNOWN_ERROR, e.code)
+        else:
+            self.fail("parse_response should have raised BasketException")
 
     def test_response_content(self):
         """parse_response() returns parsed response content if no error"""
         data = {u'status': u'ok', u'foo': u'bar'}
         content = json.dumps(data)
-        res = Mock(status_code=200, content=content)
+        res = Mock(status_code=200, content=content,
+                   content_type='application/json')
         result = parse_response(res)
         self.assertEqual(data, result)
 
@@ -69,7 +88,8 @@ class TestBasketClient(unittest.TestCase):
         with patch('basket.base.requests.request', autospec=True) \
                 as request_call:
             request_call.return_value = Mock(status_code=200,
-                                             content=json.dumps(response_data))
+                                             content=json.dumps(response_data),
+                                             content_type='application/json')
             result = request(method, action, data="DATA",
                              token=token, params="PARAMS")
 
@@ -90,7 +110,8 @@ class TestBasketClient(unittest.TestCase):
         with patch('basket.base.requests.request', autospec=True) \
                 as request_call:
             request_call.return_value = Mock(status_code=200,
-                                             content=json.dumps(content))
+                                             content=json.dumps(content),
+                                             content_type='application/json')
             result = request(method, action, data=input_data,
                              token=token, params="PARAMS")
 
@@ -114,7 +135,8 @@ class TestBasketClient(unittest.TestCase):
         with patch('basket.base.requests.request', autospec=True) \
                 as request_call:
             request_call.return_value = Mock(status_code=200,
-                                             content=json.dumps(response_data))
+                                             content=json.dumps(response_data),
+                                             content_type='application/json')
             result = request(method, action, data=input_data,
                              token=token, params="PARAMS")
 
