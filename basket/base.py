@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 
 # Use Django settings for BASKET_URL if available, but fall back to
@@ -16,6 +17,11 @@ else:
 
 import requests
 
+import basket.errors as errors
+
+
+log = logging.getLogger(__name__)
+
 
 def get_env_or_setting(name, default=None):
     """Return the value of name from an env var, a Django setting, or default"""
@@ -29,13 +35,38 @@ BASKET_TIMEOUT = get_env_or_setting('BASKET_TIMEOUT', 10)
 
 class BasketException(Exception):
     def __init__(self, *args, **kwargs):
-        # Store status_code on exception if available, else 0
+        # Required kwargs:
+        #
+        # :param code: Basket error code (from basket/errors.py)
+        #
+        # Optional args:
+        #
+        # :param: First arg can be an English description of the error
+        #
+        # Optional kwargs:
+        #
+        # :param status_code: HTTP status code (e.g. 200, 400)
+        # :param result: Whole decoded result from Basket
+        #
         self.status_code = kwargs.pop('status_code', 0)
+        # `code` is a required kwarg, but if it's not there, better to
+        # fake it and report the error than to blow up in the middle of error
+        # handling.
+        self.code = kwargs.pop('code', errors.BASKET_UNKNOWN_ERROR)
+        self.result = kwargs.pop('result', {})
+        if args:
+            self.desc = args[0]
+        else:
+            self.desc = ''
         super(BasketException, self).__init__(*args, **kwargs)
 
 
 class BasketNetworkException(BasketException):
     """Used on error connecting to basket"""
+    def __init__(self, *args, **kwargs):
+        if not 'code' in kwargs:
+            kwargs['code'] = errors.BASKET_NETWORK_FAILURE
+        super(BasketNetworkException, self).__init__(*args, **kwargs)
 
 
 def basket_url(method, token=None):
@@ -50,16 +81,21 @@ def basket_url(method, token=None):
 def parse_response(res):
     """Parse the result of a basket API call, raise exception on error"""
 
-    if res.status_code != 200:
-        raise BasketException('%s request returned from basket: %s' %
-                              (res.status_code, res.content),
-                              status_code=res.status_code)
-
     # Parse the json and check for errors
-    result = json.loads(res.content)
+    result = {}
+    if res.content_type == 'application/json':
+        try:
+            result = json.loads(res.content)
+        except:
+            log.exception("Error parsing JSON returned by basket (%s)" % res.content)
 
-    if result.get('status') == 'error':
-        raise BasketException(result['desc'])
+    if res.status_code != 200 or result.get('status', '') == 'error':
+        desc = result.get('desc', '%s request returned from basket: %s' %
+                                  (res.status_code, res.content))
+        raise BasketException(desc,
+                              status_code=res.status_code,
+                              code=result.get('code', errors.BASKET_UNKNOWN_ERROR),
+                              result=result)
 
     return result
 
@@ -127,8 +163,9 @@ def unsubscribe(token, email, newsletters=None, optout=False):
     elif newsletters:
         data['newsletters'] = newsletters
     else:
-        raise BasketException('unsubscribe requires ether a newsletters '
-                              'or optout parameter')
+        raise BasketException('unsubscribe requires either a newsletters '
+                              'or optout parameter',
+                              code=errors.BASKET_USAGE_ERROR)
 
     return request('post', 'unsubscribe', data=data, token=token)
 
@@ -155,12 +192,14 @@ def lookup_user(email=None, token=None, api_key=None):
     if email:
         api_key = api_key or BASKET_API_KEY
         if not api_key:
-            raise BasketException('API key required for email lookup.')
+            raise BasketException('API key required for email lookup.',
+                                  code=errors.BASKET_AUTH_ERROR)
         return request('get', 'lookup-user',
                        params={'email': email},
                        headers={'x-api-key': api_key})
 
-    raise BasketException('Either token or email are required.')
+    raise BasketException('Either token or email are required.',
+                          code=errors.BASKET_USAGE_ERROR)
 
 
 def debug_user(email, supertoken):
