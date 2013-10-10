@@ -82,12 +82,12 @@ def parse_response(res):
     """Parse the result of a basket API call, raise exception on error"""
 
     # Parse the json and check for errors
+    # We assume all basket calls respond with JSON (they're supposed to)
     result = {}
-    if res.content_type == 'application/json':
-        try:
-            result = json.loads(res.content)
-        except:
-            log.exception("Error parsing JSON returned by basket (%s)" % res.content)
+    try:
+        result = json.loads(res.content)
+    except:
+        log.exception("Error parsing JSON returned by basket (%s)" % res.content)
 
     if res.status_code != 200 or result.get('status', '') == 'error':
         desc = result.get('desc', '%s request returned from basket: %s' %
