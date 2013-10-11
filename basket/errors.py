@@ -8,6 +8,8 @@ BASKET_AUTH_ERROR = 7
 BASKET_SSL_REQUIRED = 8
 BASKET_INVALID_NEWSLETTER = 9
 BASKET_INVALID_LANGUAGE = 10
+BASKET_EMAIL_NOT_CHANGED = 11
+BASKET_CHANGE_REQUEST_NOT_FOUND = 12
 
 # If you get this, report it as a bug so we can add a more specific
 # error code.
