@@ -88,6 +88,8 @@ but to start with, the errors are::
     BASKET_SSL_REQUIRED
     BASKET_INVALID_NEWSLETTER
     BASKET_INVALID_LANGUAGE
+    BASKET_EMAIL_NOT_CHANGED
+    BASKET_CHANGE_REQUEST_NOT_FOUND
 
     # If you get this, report it as a bug so we can add a more specific
     # error code.
