@@ -137,7 +137,15 @@ def subscribe(email, newsletters, **kwargs):
     should be passed as keyword arguments."""
 
     kwargs.update(email=email, newsletters=newsletters)
-    return request('post', 'subscribe', data=kwargs)
+    headers = {}
+    if kwargs.get('sync', 'N') == 'Y':
+        api_key = kwargs.pop('api_key', BASKET_API_KEY)
+        if not api_key:
+            raise BasketException('API key required for email lookup.',
+                                  code=errors.BASKET_AUTH_ERROR)
+        headers['x-api-key'] = api_key
+
+    return request('post', 'subscribe', data=kwargs, headers=headers)
 
 
 def send_sms(mobile_number, msg_name, optin=False):

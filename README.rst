@@ -131,6 +131,11 @@ To run tests:
 Change Log
 ==========
 
+v0.3.10
+-------
+
+* Set api key on subscribe call when sync=Y
+
 v0.3.9
 ------
 
