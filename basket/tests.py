@@ -1,3 +1,4 @@
+from contextlib import nested
 import json
 
 from requests.exceptions import ConnectionError, Timeout
@@ -205,7 +206,60 @@ class TestBasketClient(unittest.TestCase):
             result = subscribe(email, newsletters, **kwargs)
 
         request_call.assert_called_with('post', 'subscribe',
-                                        data=expected_kwargs)
+                                        data=expected_kwargs,
+                                        headers={})
+        self.assertEqual(request_call.return_value, result)
+
+    def test_subscribe_sync_y_api_key_in_args(self):
+        """
+        subscribe calls request with the expected parms and returns the result
+        when sync='Y', adds the API key from the args to the headers
+        """
+        api_key = 'foo_bar'
+        email = "user1@example.com"
+        newsletters = ['news1', 'news2']
+        kwargs = {
+            'arg1': 100,
+            'arg2': 200,
+            'sync': 'Y',
+            'api_key': api_key,
+        }
+        expected_kwargs = kwargs.copy()
+        expected_kwargs['email'] = email
+        expected_kwargs['newsletters'] = newsletters
+        del expected_kwargs['api_key']
+        with patch('basket.base.request', autospec=True) as request_call:
+            result = subscribe(email, newsletters, **kwargs)
+
+        request_call.assert_called_with('post', 'subscribe',
+                                        data=expected_kwargs,
+                                        headers={'x-api-key': api_key})
+        self.assertEqual(request_call.return_value, result)
+
+    def test_subscribe_sync_y_api_key_not_in_args(self):
+        """
+        subscribe calls request with the expected parms and returns the result
+        when sync='Y', adds the API key from the settings to the headers
+        """
+        api_key = 'foo_bar'
+        email = "user1@example.com"
+        newsletters = ['news1', 'news2']
+        kwargs = {
+            'arg1': 100,
+            'arg2': 200,
+            'sync': 'Y',
+        }
+        expected_kwargs = kwargs.copy()
+        expected_kwargs['email'] = email
+        expected_kwargs['newsletters'] = newsletters
+        with nested(patch('basket.base.request', autospec=True),
+                    patch('basket.base.BASKET_API_KEY', api_key)) \
+                as (request_call, API_KEY):
+            result = subscribe(email, newsletters, **kwargs)
+
+        request_call.assert_called_with('post', 'subscribe',
+                                        data=expected_kwargs,
+                                        headers={'x-api-key': api_key})
         self.assertEqual(request_call.return_value, result)
 
     def test_unsubscribe(self):
