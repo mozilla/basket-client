@@ -64,7 +64,7 @@ class BasketException(Exception):
 class BasketNetworkException(BasketException):
     """Used on error connecting to basket"""
     def __init__(self, *args, **kwargs):
-        if not 'code' in kwargs:
+        if 'code' not in kwargs:
             kwargs['code'] = errors.BASKET_NETWORK_FAILURE
         super(BasketNetworkException, self).__init__(*args, **kwargs)
 

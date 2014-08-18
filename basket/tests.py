@@ -80,7 +80,7 @@ class TestBasketClient(unittest.TestCase):
 
     def test_response_no_content_type(self):
         """parse_response() doesn't fail if the response is missing a content type"""
-        #(probably only an issue in testing, but still...)
+        # probably only an issue in testing, but still...
         data = {u'status': u'ok', u'foo': u'bar'}
         content = json.dumps(data)
         res = Mock(status_code=200, content=content)
