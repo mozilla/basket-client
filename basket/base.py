@@ -145,19 +145,27 @@ def subscribe(email, newsletters, **kwargs):
                                   code=errors.BASKET_AUTH_ERROR)
         headers['x-api-key'] = api_key
 
+    source_ip = kwargs.pop('source_ip', None)
+    if source_ip:
+        headers['x-source-ip'] = source_ip
+
     return request('post', 'subscribe', data=kwargs, headers=headers)
 
 
-def send_sms(mobile_number, msg_name, optin=False):
+def send_sms(mobile_number, msg_name, optin=False, source_ip=None):
     """
     Send SMS message `msg_name` to `mobile_number` and optionally add the
     number to a list for future messages.
     """
+    headers = {}
+    if source_ip:
+        headers['x-source-ip'] = source_ip
+
     return request('post', 'subscribe_sms', data={
         'mobile_number': mobile_number,
         'msg_name': msg_name,
         'optin': 'Y' if optin else 'N',
-    })
+    }, headers=headers)
 
 
 def unsubscribe(token, email, newsletters=None, optout=False):

@@ -8,6 +8,11 @@
 Change Log
 ======================
 
+v0.3.11
+-------
+
+* Add option to send the source IP to basket service for rate limiting purposes for the subscribe and send_sms functions.
+
 
 v0.3.10
 -------
