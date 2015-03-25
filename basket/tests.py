@@ -6,7 +6,7 @@ from mock import ANY, Mock, patch
 
 from basket import (BasketException, confirm, confirm_email_change, debug_user,
                     errors, get_newsletters, lookup_user, request, send_recovery_message,
-                    start_email_change, subscribe,
+                    start_email_change, subscribe, send_sms,
                     unsubscribe, update_user, user)
 from basket.base import basket_url, get_env_or_setting, parse_response
 
@@ -467,3 +467,20 @@ class TestBasketClient(unittest.TestCase):
             result = confirm_email_change(change_key)
         request_call.assert_called_with('post', 'confirm-email-change', token=change_key)
         self.assertEqual(request_call.return_value, result)
+
+    @patch('basket.base.request')
+    def test_subscribe_source_ip(self, mock_request):
+        subscribe('dude@example.com', 'abiding-times', source_ip='1.1.1.1')
+        mock_request.assert_called_with('post', 'subscribe',
+                                        data={'email': 'dude@example.com',
+                                              'newsletters': 'abiding-times'},
+                                        headers={'x-source-ip': '1.1.1.1'})
+
+    @patch('basket.base.request')
+    def test_send_sms_source_ip(self, mock_request):
+        send_sms('5558675309', 'abide', source_ip='1.1.1.1')
+        mock_request.assert_called_with('post', 'subscribe_sms',
+                                        data={'mobile_number': '5558675309',
+                                              'msg_name': 'abide',
+                                              'optin': 'N'},
+                                        headers={'x-source-ip': '1.1.1.1'})
