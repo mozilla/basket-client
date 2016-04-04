@@ -484,3 +484,16 @@ class TestBasketClient(unittest.TestCase):
                                               'msg_name': 'abide',
                                               'optin': 'N'},
                                         headers={'x-source-ip': '1.1.1.1'})
+
+    @patch('basket.base.requests')
+    def test_mock_success(self, mock_requests):
+        result = subscribe('success@example.com', 'abiding-times')
+        self.assertEqual(result, {'status': 'ok'})
+        self.assertFalse(mock_requests.request.called)
+
+    @patch('basket.base.requests')
+    def test_mock_failure(self, mock_requests):
+        with self.assertRaises(BasketException) as exc:
+            subscribe('failure@example.com', 'abiding-times')
+        self.assertEqual(exc.exception.code, errors.BASKET_MOCK_FAILURE)
+        self.assertFalse(mock_requests.request.called)

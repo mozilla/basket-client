@@ -73,3 +73,16 @@ but to start with, the errors are::
     # If you get this, report it as a bug so we can add a more specific
     # error code.
     BASKET_UNKNOWN_ERROR
+
+Usage in tests
+==============
+
+You may wish to test your site without the overhead and fragility of calling
+an external service. To test your subscription forms without actually hitting
+the Basket service simply use a special set of email addresses:
+
+* ``success@example.com`` will cause the basket client to return a success message.
+* ``failure@example.com`` will cause the basket client to raise a ``BasketError`` exception.
+
+These will allow you to test the functioning of your form handling code without making any
+actual network calls.
