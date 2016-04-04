@@ -8,8 +8,8 @@ real one and we don't really care who/what it is.
 
 .. image:: https://circleci.com/gh/mozilla/basket-client/tree/master.svg?style=svg
     :target: https://circleci.com/gh/mozilla/basket-client/tree/master
-.. image:: https://pypip.in/v/basket-client/badge.png
-    :target: https://crate.io/packages/basket-client
+.. image:: https://img.shields.io/pypi/v/basket-client.svg
+    :target: https://pypi.python.org/pypi/basket-client
 
 
 Docs
