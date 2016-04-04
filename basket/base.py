@@ -75,7 +75,7 @@ def basket_url(method, token=None):
 
     token = '%s/' % token if token else ''
 
-    return ('%s/news/%s/%s' % (BASKET_URL, method, token))
+    return '%s/news/%s/%s' % (BASKET_URL, method, token)
 
 
 def parse_response(res):
@@ -86,7 +86,7 @@ def parse_response(res):
     result = {}
     try:
         result = json.loads(res.content)
-    except:
+    except Exception:
         log.exception("Error parsing JSON returned by basket (%s)" % res.content)
 
     if res.status_code != 200 or result.get('status', '') == 'error':
@@ -102,6 +102,14 @@ def parse_response(res):
 
 def request(method, action, data=None, token=None, params=None, headers=None):
     """Call the basket API with the supplied http method and data."""
+    # send mock response for testing email addresses (bug 1261886)
+    if data and 'email' in data:
+        if data['email'] == 'success@example.com':
+            return {'status': 'ok'}
+        elif data['email'] == 'failure@example.com':
+            raise BasketException('mock failure',
+                                  status_code=400,
+                                  code=errors.BASKET_MOCK_FAILURE)
 
     # newsletters should be comma-delimited
     if data and 'newsletters' in data:

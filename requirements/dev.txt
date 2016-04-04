@@ -2,11 +2,8 @@
 # needed to run the site, it belongs in requirements-prod.txt.  If it's a
 # package for developers (testing, docs, etc.), it goes in this file.
 
-mock
-requests
-flake8
-unittest2
-coverage
+coverage==4.0.3
+flake8==2.5.4
 
 # Documentation
 Sphinx==1.2.2
