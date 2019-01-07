@@ -1,4 +1,3 @@
-from contextlib import nested
 import json
 
 from requests.exceptions import ConnectionError, Timeout
@@ -10,10 +9,7 @@ from basket import (BasketException, confirm, confirm_email_change, debug_user,
                     unsubscribe, update_user, user)
 from basket.base import basket_url, get_env_or_setting, parse_response
 
-try:
-    import unittest2 as unittest
-except ImportError:
-    import unittest
+import unittest
 
 
 # Warning: there are two request() methods, one in basket-client and
@@ -252,10 +248,9 @@ class TestBasketClient(unittest.TestCase):
         expected_kwargs = kwargs.copy()
         expected_kwargs['email'] = email
         expected_kwargs['newsletters'] = newsletters
-        with nested(patch('basket.base.request', autospec=True),
-                    patch('basket.base.BASKET_API_KEY', api_key)) \
-                as (request_call, API_KEY):
-            result = subscribe(email, newsletters, **kwargs)
+        with patch('basket.base.request', autospec=True) as request_call:
+            with patch('basket.base.BASKET_API_KEY', api_key):
+                result = subscribe(email, newsletters, **kwargs)
 
         request_call.assert_called_with('post', 'subscribe',
                                         data=expected_kwargs,
