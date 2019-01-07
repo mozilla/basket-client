@@ -8,8 +8,8 @@
 Change Log
 ======================
 
-v1.0.0
-------
+v1.0.0 - Jan 7, 2019
+--------------------
 
 * Add support for Python 3.5+ and drop support for Python 2.6.
   Thanks to `diox <https://github.com/diox>`_ for the patch!
