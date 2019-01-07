@@ -21,5 +21,4 @@ Documentation can be found at http://basket-client.rtfd.org/
 License
 -------
 
-This software is licensed under the MPL http://www.mozilla.org/MPL/. For more
-information, read the file ``LICENSE``.
+This software is licensed under the BSD License. For more information, read the file ``LICENSE``.
