@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+import six
 
 # Use Django settings for BASKET_URL if available, but fall back to
 # env var or default if not. This lets us test without all the setup
@@ -113,7 +114,7 @@ def request(method, action, data=None, token=None, params=None, headers=None):
 
     # newsletters should be comma-delimited
     if data and 'newsletters' in data:
-        if not isinstance(data['newsletters'], basestring):
+        if not isinstance(data['newsletters'], six.string_types):
             data['newsletters'] = ','.join(data['newsletters'])
 
     try:
