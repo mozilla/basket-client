@@ -3,7 +3,7 @@ Basket Client
 =============
 
 This is a client for Mozilla's email subscription service,
-[basket](https://basket.mozilla.org/). Basket is not a real subscription service, but it talks to a
+`basket <https://basket.mozilla.org/>`_. Basket is not a real subscription service, but it talks to a
 real one and we don't really care who/what it is.
 
 .. image:: https://travis-ci.org/mozilla/basket-client.svg?branch=master
