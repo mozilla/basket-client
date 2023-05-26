@@ -2,6 +2,7 @@
 # needed to run the site, it belongs in requirements-prod.txt.  If it's a
 # package for developers (testing, docs, etc.), it goes in this file.
 
+black==23.3.0
 coverage==4.0.3
 flake8==2.5.4
 
