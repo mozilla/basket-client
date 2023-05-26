@@ -4,7 +4,7 @@
 
 black==23.3.0
 coverage==4.0.3
-flake8==2.5.4
+ruff==0.0.270
 
 # Documentation
 Sphinx==1.2.2
