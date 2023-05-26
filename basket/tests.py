@@ -1,7 +1,7 @@
 import json
 import unittest
+from unittest.mock import ANY, Mock, patch
 
-from mock import ANY, Mock, patch
 from requests.exceptions import ConnectionError, Timeout
 
 from basket import (

@@ -1,5 +1,4 @@
-from setuptools import setup, find_packages
-
+from setuptools import find_packages, setup
 
 setup(
     name="basket-client",
@@ -10,17 +9,18 @@ setup(
     author_email="dev-mozilla-org@lists.mozilla.org",
     license="BSD",
     packages=find_packages(exclude=["ez_setup"]),
-    install_requires=["requests", "six"],
+    install_requires=["requests"],
     url="https://github.com/mozilla/basket-client",
     include_package_data=True,
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Operating System :: OS Independent",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 2.7",
-        "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
         "Intended Audience :: Developers",
         "Natural Language :: English",
         "License :: OSI Approved :: BSD License",
@@ -29,5 +29,4 @@ setup(
     ],
     keywords=["mozilla", "basket"],
     test_suite="basket.tests.TestBasketClient",
-    tests_require=["mock==2.0.0"],
 )

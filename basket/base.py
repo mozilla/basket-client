@@ -2,8 +2,6 @@ import json
 import logging
 import os
 
-import six
-
 # Use Django settings for BASKET_URL if available, but fall back to
 # env var or default if not. This lets us test without all the setup
 # that we'd otherwise need for Django.
@@ -59,7 +57,7 @@ class BasketException(Exception):
             self.desc = args[0]
         else:
             self.desc = ""
-        super(BasketException, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
 
 class BasketNetworkException(BasketException):
@@ -68,7 +66,7 @@ class BasketNetworkException(BasketException):
     def __init__(self, *args, **kwargs):
         if "code" not in kwargs:
             kwargs["code"] = errors.BASKET_NETWORK_FAILURE
-        super(BasketNetworkException, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
 
 def basket_url(method, token=None):
@@ -77,7 +75,7 @@ def basket_url(method, token=None):
 
     token = f"{token}/" if token else ""
 
-    return "%s/news/%s/%s" % (BASKET_URL, method, token)
+    return f"{BASKET_URL}/news/{method}/{token}"
 
 
 def parse_response(res):
@@ -92,7 +90,7 @@ def parse_response(res):
         log.exception(f"Error parsing JSON returned by basket ({res.content})")
 
     if res.status_code != 200 or result.get("status", "") == "error":
-        desc = result.get("desc", "%s request returned from basket: %s" % (res.status_code, res.content))
+        desc = result.get("desc", f"{res.status_code} request returned from basket: {res.content}")
         raise BasketException(desc, status_code=res.status_code, code=result.get("code", errors.BASKET_UNKNOWN_ERROR), result=result)
 
     return result
@@ -109,7 +107,7 @@ def request(method, action, data=None, token=None, params=None, headers=None):
 
     # newsletters should be comma-delimited
     if data and "newsletters" in data:
-        if not isinstance(data["newsletters"], six.string_types):
+        if not isinstance(data["newsletters"], str):
             data["newsletters"] = ",".join(data["newsletters"])
 
     try:
