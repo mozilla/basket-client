@@ -49,7 +49,7 @@ python =
 [testenv]
 deps = -rrequirements/dev.txt
 commands =
-    python setup.py test
+    pytest basket/tests.py
 
 [testenv:py37-lint]
 basepython = python3.7
