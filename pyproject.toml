@@ -1,3 +1,111 @@
+[build-system]
+build-backend = "hatchling.build"
+requires = ["hatchling"]
+
+[project]
+name = "basket-client"
+dynamic = ["version"]
+description = "A Python client for Mozilla's basket service."
+readme = "README.rst"
+requires-python = ">=3.7"
+license = {text = "BSD-3-Clause"}
+keywords = ["mozilla", "basket"]
+authors = [
+  { name = "Michael Kelly" },
+]
+maintainers = [
+  { name = "Paul McLanahan" },
+  { name = "Rob Hudson" },
+]
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Environment :: Web Environment",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: BSD License",
+  "Natural Language :: English",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.7",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Topic :: Communications",
+  "Topic :: Software Development :: Libraries",
+]
+dependencies = [
+  "requests",
+]
+
+[project.urls]
+Documentation = "https://github.com/mozilla/basket-client#readme"
+Issues = "https://github.com/mozilla/basket-client/issues"
+Source = "https://github.com/mozilla/basket-client"
+
+[tool.hatch.version]
+path = "src/basket/__init__.py"
+
+[tool.hatch.build.targets.sdist]
+include = [
+  "src/basket/*",
+  "LICENSE",
+  "README.rst",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/basket"]
+
+[tool.hatch.envs.test]
+dependencies = [
+  "coverage[toml]>=6.5",
+  "pytest",
+  "pytest-cov",
+  "tox",
+]
+[tool.hatch.envs.test.scripts]
+test = "pytest {args:tests}"
+cov = "pytest --cov-report=term-missing --cov-config=pyproject.toml --cov=src/basket/ {args:tests}"
+all = [
+  "test",
+]
+
+[[tool.hatch.envs.all.matrix]]
+python = ["3.7", "3.8", "3.9", "3.10", "3.11"]
+
+[tool.hatch.envs.lint]
+detached = true
+dependencies = [
+  "black>=23.3.0",
+  "ruff>=0.0.270",
+]
+[tool.hatch.envs.lint.scripts]
+style = [
+  "ruff {args:.}",
+  "black --check {args:.}",
+]
+fmt = [
+  "black {args:.}",
+  "ruff --fix {args:.}",
+  "style",
+]
+all = [
+  "style",
+]
+
+[tool.coverage.run]
+branch = true
+parallel = true
+source = [
+  "src/basket/",
+]
+
+[tool.coverage.report]
+show_missing = true
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]
+
 [tool.black]
 line-length = 150
 target-version = ['py39']
@@ -37,7 +145,7 @@ known-first-party = ["basket"]
 [tool.tox]
 legacy_tox_ini = """
 [tox]
-envlist = py37,py38,py39,py310,py37-lint
+envlist = py37,py38,py39,py310,py311
 
 [gh-actions]
 python =
@@ -45,16 +153,10 @@ python =
     3.8: py38
     3.9: py39
     3.10: py310
+    3.11: py311
 
 [testenv]
 deps = -rrequirements/dev.txt
 commands =
-    pytest basket/tests.py
-
-[testenv:py37-lint]
-basepython = python3.7
-changedir = {toxinidir}
-commands = 
-    black --check basket setup.py
-    ruff basket setup.py
+    pytest tests/
 """

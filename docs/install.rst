@@ -41,8 +41,26 @@ values in an environment variable of the same name.
 Tests
 =====
 
-To run tests:
+Tests depend on `hatch` for package management. To install hatch:
 
 .. code:: bash
 
-    $ python setup.py test
+    $ pip install hatch
+
+Once installed you can run the tests with:
+
+.. code:: bash
+
+    $ hatch run test:all
+
+To run the tests in all supported environments specified via tox:
+
+.. code:: bash
+
+    $ hatch run tox
+
+To run the tests in a specific environment:
+
+.. code:: bash
+
+    $ hatch run tox run -e py310
