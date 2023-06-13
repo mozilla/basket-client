@@ -46,7 +46,7 @@ Example::
         rc = some_basket_call(args)
     except BasketError as e:
         if e.code == errors.BASKET_INVALID_EMAIL:
-            print "That email address was not valid"
+            print("That email address was not valid")
         else:
             log.exception("Some basket error (%s)" % e.desc)
 

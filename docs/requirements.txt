@@ -1,0 +1,2 @@
+Sphinx<7 # Sphinx < 7 required by sphinx-rtd-theme
+sphinx-rtd-theme==1.2.2
