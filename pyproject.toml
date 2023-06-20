@@ -1,22 +1,26 @@
 [build-system]
 build-backend = "hatchling.build"
-requires = ["hatchling"]
+requires = [
+  "hatchling",
+]
 
 [project]
 name = "basket-client"
-dynamic = ["version"]
 description = "A Python client for Mozilla's basket service."
 readme = "README.rst"
-requires-python = ">=3.7"
-license = {text = "BSD-3-Clause"}
-keywords = ["mozilla", "basket"]
-authors = [
-  { name = "Michael Kelly" },
+keywords = [
+  "basket",
+  "mozilla",
 ]
+license = {text = "BSD-3-Clause"}
 maintainers = [
   { name = "Paul McLanahan" },
   { name = "Rob Hudson" },
 ]
+authors = [
+  { name = "Michael Kelly" },
+]
+requires-python = ">=3.7"
 classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Environment :: Web Environment",
@@ -24,6 +28,7 @@ classifiers = [
   "License :: OSI Approved :: BSD License",
   "Natural Language :: English",
   "Programming Language :: Python",
+  "Programming Language :: Python :: 3 :: Only",
   "Programming Language :: Python :: 3.7",
   "Programming Language :: Python :: 3.8",
   "Programming Language :: Python :: 3.9",
@@ -32,10 +37,12 @@ classifiers = [
   "Topic :: Communications",
   "Topic :: Software Development :: Libraries",
 ]
+dynamic = [
+  "version",
+]
 dependencies = [
   "requests",
 ]
-
 [project.urls]
 Documentation = "https://github.com/mozilla/basket-client#readme"
 Issues = "https://github.com/mozilla/basket-client/issues"
@@ -91,21 +98,6 @@ all = [
   "style",
 ]
 
-[tool.coverage.run]
-branch = true
-parallel = true
-source = [
-  "src/basket/",
-]
-
-[tool.coverage.report]
-show_missing = true
-exclude_lines = [
-  "no cov",
-  "if __name__ == .__main__.:",
-  "if TYPE_CHECKING:",
-]
-
 [tool.black]
 line-length = 150
 target-version = ['py39']
@@ -141,6 +133,21 @@ extend-exclude = ["docs"]
 
 [tool.ruff.isort]
 known-first-party = ["basket"]
+
+[tool.coverage.run]
+branch = true
+parallel = true
+source = [
+  "src/basket/",
+]
+
+[tool.coverage.report]
+show_missing = true
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]
 
 [tool.tox]
 legacy_tox_ini = """
