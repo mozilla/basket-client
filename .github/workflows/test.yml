@@ -30,7 +30,6 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install hatch<2.0.0
-          pip install -r requirements/dev.txt
 
       - name: Test
         run: hatch run tox

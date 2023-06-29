@@ -164,7 +164,10 @@ python =
     3.11: py311
 
 [testenv]
-deps = -rrequirements/dev.txt
+deps =
+  coverage[toml]>=6.5
+  pytest
+  pytest-cov
 commands =
     pytest {posargs}
 """
