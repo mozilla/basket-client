@@ -41,7 +41,7 @@ dynamic = [
   "version",
 ]
 dependencies = [
-  "requests",
+  "requests<3.0.0",
 ]
 [project.urls]
 Documentation = "https://github.com/mozilla/basket-client#readme"
@@ -53,8 +53,11 @@ path = "src/basket/__init__.py"
 
 [tool.hatch.build.targets.sdist]
 include = [
-  "src/basket/*",
+  "docs/",
+  "src/",
+  "tests/",
   "LICENSE",
+  "pyproject.toml",
   "README.rst",
 ]
 
@@ -165,5 +168,5 @@ python =
 [testenv]
 deps = -rrequirements/dev.txt
 commands =
-    pytest tests/
+    pytest {posargs}
 """
