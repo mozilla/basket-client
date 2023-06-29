@@ -20,7 +20,7 @@ maintainers = [
 authors = [
   { name = "Michael Kelly" },
 ]
-requires-python = ">=3.7"
+requires-python = ">=3.8"
 classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Environment :: Web Environment",
@@ -29,7 +29,6 @@ classifiers = [
   "Natural Language :: English",
   "Programming Language :: Python",
   "Programming Language :: Python :: 3 :: Only",
-  "Programming Language :: Python :: 3.7",
   "Programming Language :: Python :: 3.8",
   "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
@@ -79,7 +78,7 @@ all = [
 ]
 
 [[tool.hatch.envs.all.matrix]]
-python = ["3.7", "3.8", "3.9", "3.10", "3.11"]
+python = ["3.8", "3.9", "3.10", "3.11"]
 
 [tool.hatch.envs.lint]
 detached = true
@@ -155,11 +154,10 @@ exclude_lines = [
 [tool.tox]
 legacy_tox_ini = """
 [tox]
-envlist = py37,py38,py39,py310,py311
+envlist = py38,py39,py310,py311
 
 [gh-actions]
 python =
-    3.7: py37
     3.8: py38
     3.9: py39
     3.10: py310
