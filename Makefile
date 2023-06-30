@@ -1,13 +1,13 @@
 all: help
 
 clean:
-	rm -rf basket_client.egg-info build/ dist/
+	hatch clean
 
 test:
-	hatch run tox
+	hatch run test:cov
 
 lint:
-	hatch run lint:all
+	hatch run lint:check
 
 help:
 	@echo "Please use \`make <target>' where <target> is one of"

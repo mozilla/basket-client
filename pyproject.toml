@@ -68,32 +68,28 @@ dependencies = [
   "coverage[toml]>=6.5",
   "pytest",
   "pytest-cov",
-  "tox",
 ]
 [tool.hatch.envs.test.scripts]
 test = "pytest {args:tests}"
-cov = "pytest --cov-report=term-missing --cov-config=pyproject.toml --cov=src/basket/ {args:tests}"
-all = [
-  "test",
-]
+cov = "pytest --cov-config=pyproject.toml --cov=src/basket/ --cov-report term-missing {args:tests}"
 
-[[tool.hatch.envs.all.matrix]]
+[[tool.hatch.envs.test.matrix]]
 python = ["3.8", "3.9", "3.10", "3.11"]
 
 [tool.hatch.envs.lint]
 detached = true
 dependencies = [
   "black>=23.3.0",
-  "ruff>=0.0.270",
+  "ruff>=0.0.275",
 ]
 [tool.hatch.envs.lint.scripts]
-style = [
+check = [
   "ruff {args:.}",
   "black --check {args:.}",
 ]
-fmt = [
-  "black {args:.}",
+fix = [
   "ruff --fix {args:.}",
+  "black {args:.}",
   "style",
 ]
 all = [
@@ -150,24 +146,3 @@ exclude_lines = [
   "if __name__ == .__main__.:",
   "if TYPE_CHECKING:",
 ]
-
-[tool.tox]
-legacy_tox_ini = """
-[tox]
-envlist = py38,py39,py310,py311
-
-[gh-actions]
-python =
-    3.8: py38
-    3.9: py39
-    3.10: py310
-    3.11: py311
-
-[testenv]
-deps =
-  coverage[toml]>=6.5
-  pytest
-  pytest-cov
-commands =
-    pytest {posargs}
-"""
