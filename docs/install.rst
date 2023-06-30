@@ -45,22 +45,16 @@ Tests depend on `hatch` for package management. To install hatch:
 
 .. code:: bash
 
-    $ pip install hatch
+    $ pipx install hatch
 
-Once installed you can run the tests with:
-
-.. code:: bash
-
-    $ hatch run test:all
-
-To run the tests in all supported environments specified via tox:
+Once installed you can run the tests in all supported Python environments with:
 
 .. code:: bash
 
-    $ hatch run tox
+    $ make test  # equiv to `hatch run test:cov`
 
-To run the tests in a specific environment:
+To run the tests with specific Python version you can specify this with hatch:
 
 .. code:: bash
 
-    $ hatch run tox run -e py310
+    $ hatch run +py=3.10 test:cov
