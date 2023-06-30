@@ -6,13 +6,14 @@ Usage
 
 
 Do you want to subscribe people to Mozilla's newsletters?
+
 All you need to do is:
 
 .. code:: python
 
     import basket
 
-    basket.subscribe('<email>', '<newsletter>', <kwargs>)
+    basket.subscribe("<email>", "<newsletter>", <kwargs>)
 
 You can pass additional fields as keyword arguments, such as format
 and country.
@@ -24,7 +25,7 @@ use the ``lookup_user`` method like so:
 
     import basket
 
-    basket.lookup_user(email='<email>', api_key='<api_key>')
+    basket.lookup_user(email="<email>", api_key="<api_key>")
 
 And it will return full details about the user. <api_key> is a special
 token that grants you admin access to the data. Check with `the mozilla.org
@@ -48,7 +49,7 @@ Example::
         if e.code == errors.BASKET_INVALID_EMAIL:
             print("That email address was not valid")
         else:
-            log.exception("Some basket error (%s)" % e.desc)
+            log.exception(f"Some basket error ({e.desc})")
 
 The error codes are defined in ``basket.errors``.  New ones can be added anytime,
 but to start with, the errors are::
