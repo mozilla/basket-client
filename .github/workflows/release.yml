@@ -1,0 +1,60 @@
+name: release 📦
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+
+jobs:
+  tests:
+    uses: ./.github/workflows/test.yml
+
+  build:
+    name: Build wheels and source distribution
+    if: github.repository == 'mozilla/basket-client'
+    needs:
+      - tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install build dependencies
+        run: python -m pip install hatch
+
+      - name: Build source distribution
+        run: python -m hatch build
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: artifacts
+          path: dist/*
+          if-no-files-found: error
+          retention-days: 30
+
+  publish:
+    # Publish to PyPI using the release environment.
+    # See: https://docs.pypi.org/trusted-publishers/using-a-publisher/
+    name: Publish release to PyPI
+    needs:
+      - build
+    runs-on: ubuntu-latest
+    environment: release
+    permissions:
+      id-token: write
+
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: artifacts
+          path: dist
+
+      - name: Publish build artifacts to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          print-hash: true
+          skip-existing: true
+          verbose: true
+          # Note: Uncomment the following line to publish to TestPyPI.
+          # repository-url: https://test.pypi.org/legacy/
