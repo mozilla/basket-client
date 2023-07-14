@@ -5,7 +5,7 @@ Change Log
 ======================
 
 v1.1.0 - Jun 14, 2023
---------------------
+---------------------
 
 * Drop support for Python 2.x and < 3.8 (current supported Python versions).
 
