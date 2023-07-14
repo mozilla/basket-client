@@ -1,9 +1,5 @@
 """A Python client for Mozilla's basket service."""
-VERSION = "1.1.0"
-
-# flake8: noqa
-
-from basket.base import (
+from basket.base import (  # noqa: F401
     BasketException,
     BasketNetworkException,
     confirm,
@@ -20,3 +16,5 @@ from basket.base import (
     update_user,
     user,
 )
+
+VERSION = "1.1.0"
