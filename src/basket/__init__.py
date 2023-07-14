@@ -1,4 +1,5 @@
 """A Python client for Mozilla's basket service."""
+VERSION = "1.1.0"
 
 # flake8: noqa
 

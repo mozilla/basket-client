@@ -6,11 +6,19 @@ This is a client for Mozilla's email subscription service,
 `basket <https://basket.mozilla.org/>`_. Basket is not a real subscription service, but it talks to a
 real one and we don't really care who/what it is.
 
-.. image:: https://travis-ci.org/mozilla/basket-client.svg?branch=master
-    :target: https://travis-ci.org/mozilla/basket-client
-.. image:: https://img.shields.io/pypi/v/basket-client.svg
-    :target: https://pypi.python.org/pypi/basket-client
+|latest-version| |python-support| |build-status|
 
+.. |latest-version| image:: https://img.shields.io/pypi/v/basket-client.svg
+   :target: https://pypi.org/project/basket-client/
+   :alt: Latest version on PyPI
+
+.. |python-support| image:: https://img.shields.io/pypi/pyversions/basket-client
+   :target: https://pypi.org/project/basket-client/
+   :alt: Supported Python versions
+
+.. |build-status| image:: https://github.com/mozilla/basket-client/actions/workflows/test.yml/badge.svg
+   :target: https://github.com/mozilla/basket-client/actions/workflows/test.yml
+   :alt: Build Status
 
 Docs
 ----

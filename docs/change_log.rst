@@ -1,12 +1,13 @@
-.. This Source Code Form is subject to the terms of the Mozilla Public
-.. License, v. 2.0. If a copy of the MPL was not distributed with this
-.. file, You can obtain one at http://mozilla.org/MPL/2.0/.
-
 .. _change-log:
 
 ======================
 Change Log
 ======================
+
+v1.1.0 - Jun 14, 2023
+--------------------
+
+* Drop support for Python 2.x and < 3.8 (current supported Python versions).
 
 v1.0.0 - Jan 7, 2019
 --------------------

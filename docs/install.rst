@@ -1,7 +1,3 @@
-.. This Source Code Form is subject to the terms of the Mozilla Public
-.. License, v. 2.0. If a copy of the MPL was not distributed with this
-.. file, You can obtain one at http://mozilla.org/MPL/2.0/.
-
 .. _install:
 
 ========================
@@ -45,8 +41,20 @@ values in an environment variable of the same name.
 Tests
 =====
 
-To run tests:
+Tests depend on `hatch` for package management. To install hatch:
 
 .. code:: bash
 
-    $ python setup.py test
+    $ pipx install hatch
+
+Once installed you can run the tests in all supported Python environments with:
+
+.. code:: bash
+
+    $ make test  # equiv to `hatch run test:cov`
+
+To run the tests with specific Python version you can specify this with hatch:
+
+.. code:: bash
+
+    $ hatch run +py=3.10 test:cov
