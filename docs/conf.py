@@ -7,7 +7,7 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = "github.com/mozilla/basket-client"
-copyright = "2014, Mozilla"
+copyright = "2014, Mozilla Foundation"
 author = "Michael Kelly"
 
 # -- General configuration ---------------------------------------------------

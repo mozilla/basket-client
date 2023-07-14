@@ -74,6 +74,7 @@ test = "pytest {args:tests}"
 cov = "pytest --cov-config=pyproject.toml --cov=src/basket/ --cov-report term-missing {args:tests}"
 
 [[tool.hatch.envs.test.matrix]]
+# Note: When changing these, also update the .github/workflows/test.yml file.
 python = ["3.8", "3.9", "3.10", "3.11"]
 
 [tool.hatch.envs.lint]
@@ -98,7 +99,7 @@ all = [
 
 [tool.black]
 line-length = 150
-target-version = ['py39']
+target-version = ["py38"]
 include = '\.pyi?$'
 exclude = '''
 /(
@@ -126,7 +127,7 @@ select = [
     "W", # pycodestyle warnings
 ]
 line-length = 150  # To match black.
-target-version = 'py39'
+target-version = "py38"
 extend-exclude = ["docs"]
 
 [tool.ruff.isort]

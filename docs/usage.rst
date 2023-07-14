@@ -49,7 +49,7 @@ Example::
         if e.code == errors.BASKET_INVALID_EMAIL:
             print("That email address was not valid")
         else:
-            log.exception(f"Some basket error ({e.desc})")
+            log.exception("Some basket error %s", e.desc)
 
 The error codes are defined in ``basket.errors``.  New ones can be added anytime,
 but to start with, the errors are::
