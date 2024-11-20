@@ -4,6 +4,14 @@
 Change Log
 ======================
 
+v1.2.0 - Nov 20, 2024
+---------------------
+
+* Add support for Python 3.12 and 3.13
+* Drop support for Python 3.8
+* Remove outdated APIs no longer in Basket
+* Add new Basket APIs built on django-ninja -- ``/api/v1/news/newsletters/`` and ``/api/v1/users/lookup/``
+
 v1.1.0 - Jun 14, 2023
 ---------------------
 
