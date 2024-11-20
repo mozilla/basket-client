@@ -14,4 +14,4 @@ from basket.base import (  # noqa: F401
     user,
 )
 
-VERSION = "1.1.0"
+VERSION = "1.2.0"
