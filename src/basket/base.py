@@ -32,6 +32,13 @@ BASKET_API_KEY = get_env_or_setting("BASKET_API_KEY", "")
 BASKET_TIMEOUT = get_env_or_setting("BASKET_TIMEOUT", 10)
 
 
+# URLs used in the methods below, keyed by API name found in basket.
+URLS = {
+    "news.newsletters": "/api/v1/news/newsletters/",
+    "users.lookup": "/api/v1/users/lookup/",
+}
+
+
 class BasketException(Exception):
     def __init__(self, *args, **kwargs):
         # Required kwargs:
@@ -110,8 +117,13 @@ def request(method, action, data=None, token=None, params=None, headers=None):
         if not isinstance(data["newsletters"], str):
             data["newsletters"] = ",".join(data["newsletters"])
 
+    if action in URLS:
+        url = f"{BASKET_URL}{URLS[action]}"
+    else:
+        url = basket_url(action, token)
+
     try:
-        res = requests.request(method, basket_url(action, token), data=data, params=params, headers=headers, timeout=BASKET_TIMEOUT)
+        res = requests.request(method, url, data=data, params=params, headers=headers, timeout=BASKET_TIMEOUT)
     except requests.exceptions.ConnectionError:
         raise BasketNetworkException("Error connecting to basket")
     except requests.exceptions.Timeout:
@@ -149,27 +161,6 @@ def subscribe(email, newsletters, **kwargs):
     return request("post", "subscribe", data=kwargs, headers=headers)
 
 
-def send_sms(mobile_number, msg_name, optin=False, source_ip=None):
-    """
-    Send SMS message `msg_name` to `mobile_number` and optionally add the
-    number to a list for future messages.
-    """
-    headers = {}
-    if source_ip:
-        headers["x-source-ip"] = source_ip
-
-    return request(
-        "post",
-        "subscribe_sms",
-        data={
-            "mobile_number": mobile_number,
-            "msg_name": msg_name,
-            "optin": "Y" if optin else "N",
-        },
-        headers=headers,
-    )
-
-
 def unsubscribe(token, email, newsletters=None, optout=False):
     """Unsubscribe an email from certain newsletters, or all of them
     if `optout` is passed. Requires a token."""
@@ -203,22 +194,15 @@ def lookup_user(email=None, token=None, api_key=None):
     """Get a user's information using an API key or the user's token."""
     # prefer token
     if token:
-        return request("get", "lookup-user", params={"token": token})
+        return request("get", "users.lookup", params={"token": token})
 
     if email:
         api_key = api_key or BASKET_API_KEY
         if not api_key:
             raise BasketException("API key required for email lookup.", code=errors.BASKET_AUTH_ERROR)
-        return request("get", "lookup-user", params={"email": email}, headers={"x-api-key": api_key})
+        return request("get", "users.lookup", params={"email": email}, headers={"x-api-key": api_key})
 
     raise BasketException("Either token or email are required.", code=errors.BASKET_USAGE_ERROR)
-
-
-def debug_user(email, supertoken):
-    """Get a user's information using a supertoken only known by devs,
-    useful for ensuring that data is being posted correctly"""
-
-    return request("get", "debug-user", params={"email": email, "supertoken": supertoken})
 
 
 def send_recovery_message(email):
@@ -230,24 +214,4 @@ def get_newsletters():
     """Returns data about the newsletters that basket knows about.
     Format is a list of dictionaries.
     """
-    return request("get", "newsletters")["newsletters"]
-
-
-def start_email_change(token, new_email):
-    """
-    Start the process of changing the email address for a user.
-
-    :param token: User's subscriber token
-    :param new_email: Desired new email address
-    """
-    return request("post", "start-email-change", data={"email": new_email}, token=token)
-
-
-def confirm_email_change(change_key):
-    """
-    Confirm email change.
-
-    Call this when a user hits the link they were given to confirm changing
-    their email. The link includes the change_key in it.
-    """
-    return request("post", "confirm-email-change", token=change_key)
+    return request("get", "news.newsletters")["newsletters"]
