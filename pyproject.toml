@@ -12,7 +12,7 @@ keywords = [
   "basket",
   "mozilla",
 ]
-license = {text = "BSD-3-Clause"}
+license = { text = "BSD-3-Clause" }
 maintainers = [
   { name = "Paul McLanahan" },
   { name = "Rob Hudson" },
@@ -20,7 +20,7 @@ maintainers = [
 authors = [
   { name = "Michael Kelly" },
 ]
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Environment :: Web Environment",
@@ -29,10 +29,11 @@ classifiers = [
   "Natural Language :: English",
   "Programming Language :: Python",
   "Programming Language :: Python :: 3 :: Only",
-  "Programming Language :: Python :: 3.8",
   "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
   "Topic :: Communications",
   "Topic :: Software Development :: Libraries",
 ]
@@ -40,12 +41,11 @@ dynamic = [
   "version",
 ]
 dependencies = [
-  "requests<3.0.0",
+  "requests<3",
 ]
-[project.urls]
-Documentation = "https://github.com/mozilla/basket-client#readme"
-Issues = "https://github.com/mozilla/basket-client/issues"
-Source = "https://github.com/mozilla/basket-client"
+urls.Documentation = "https://github.com/mozilla/basket-client#readme"
+urls.Issues = "https://github.com/mozilla/basket-client/issues"
+urls.Source = "https://github.com/mozilla/basket-client"
 
 [tool.hatch.version]
 path = "src/basket/__init__.py"
@@ -61,7 +61,7 @@ include = [
 ]
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/basket"]
+packages = [ "src/basket" ]
 
 [tool.hatch.envs.test]
 dependencies = [
@@ -75,63 +75,41 @@ cov = "pytest --cov-config=pyproject.toml --cov=src/basket/ --cov-report term-mi
 
 [[tool.hatch.envs.test.matrix]]
 # Note: When changing these, also update the .github/workflows/test.yml file.
-python = ["3.8", "3.9", "3.10", "3.11"]
+python = [ "3.9", "3.10", "3.11", "3.12", "3.13" ]
 
 [tool.hatch.envs.lint]
 detached = true
 dependencies = [
-  "black>=23.3.0",
-  "ruff>=0.0.275",
+  "ruff",
 ]
 [tool.hatch.envs.lint.scripts]
 check = [
-  "ruff {args:.}",
-  "black --check {args:.}",
+  "ruff check {args:.}",
 ]
 fix = [
   "ruff --fix {args:.}",
-  "black {args:.}",
   "style",
 ]
 all = [
   "style",
 ]
 
-[tool.black]
-line-length = 150
-target-version = ["py38"]
-include = '\.pyi?$'
-exclude = '''
-/(
-    \.eggs
-  | \.git
-  | \.tox
-  | \.venv
-  | _build
-  | build
-  | dist
-  | docs
-)/
-'''
-
 [tool.ruff]
-# Set what ruff should check for.
-# See https://beta.ruff.rs/docs/rules/ for a list of rules.
-select = [
-    "A", # flake8-builtin errors.
-    # "B", # bugbear errors
-    "E", # pycodestyle errors
-    "F", # pyflakes errors
-    "I", # import sorting
-    "Q", # flake8-quotes errors
-    "W", # pycodestyle warnings
-]
-line-length = 150  # To match black.
-target-version = "py38"
-extend-exclude = ["docs"]
+target-version = "py39"
+line-length = 150           # To match black.
+extend-exclude = [ "docs" ]
 
-[tool.ruff.isort]
-known-first-party = ["basket"]
+# See https://beta.ruff.rs/docs/rules/ for a list of rules.
+lint.select = [
+  "A", # flake8-builtin errors.
+  # "B", # bugbear errors
+  "E", # pycodestyle errors
+  "F", # pyflakes errors
+  "I", # import sorting
+  "Q", # flake8-quotes errors
+  "W", # pycodestyle warnings
+]
+lint.isort.known-first-party = [ "basket" ]
 
 [tool.coverage.run]
 branch = true
