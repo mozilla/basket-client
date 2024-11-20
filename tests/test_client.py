@@ -7,15 +7,11 @@ from requests.exceptions import ConnectionError, Timeout
 from basket import (
     BasketException,
     confirm,
-    confirm_email_change,
-    debug_user,
     errors,
     get_newsletters,
     lookup_user,
     request,
     send_recovery_message,
-    send_sms,
-    start_email_change,
     subscribe,
     unsubscribe,
     update_user,
@@ -308,18 +304,6 @@ class TestBasketClient(unittest.TestCase):
         request_call.assert_called_with("post", "user", data=kwargs, token=token)
         self.assertEqual(request_call.return_value, result)
 
-    def test_debug_user(self):
-        """
-        debug_user passes the expected args to request(), returns the result.
-        """
-        email = "user@example.com"
-        supertoken = "STOKEN"
-        params = {"email": email, "supertoken": supertoken}
-        with patch("basket.base.request", autospec=True) as request_call:
-            result = debug_user(email, supertoken)
-        request_call.assert_called_with("get", "debug-user", params=params)
-        self.assertEqual(request_call.return_value, result)
-
     def test_get_newsletters(self):
         """
         get_newsletters passes the expected args to request() and returns
@@ -328,7 +312,7 @@ class TestBasketClient(unittest.TestCase):
         with patch("basket.base.request", autospec=True) as request_call:
             request_call.return_value = {"newsletters": "FOO BAR"}
             result = get_newsletters()
-        request_call.assert_called_with("get", "newsletters")
+        request_call.assert_called_with("get", "news.newsletters")
         self.assertEqual("FOO BAR", result)
 
     def test_confirm(self):
@@ -357,7 +341,7 @@ class TestBasketClient(unittest.TestCase):
     def test_lookup_user_token(self, mock_request):
         """Calling lookup_user with a token should not require an API key."""
         lookup_user(token="TOKEN")
-        mock_request.assert_called_with("get", "lookup-user", params={"token": "TOKEN"})
+        mock_request.assert_called_with("get", "users.lookup", params={"token": "TOKEN"})
 
     @patch("basket.base.request")
     def test_lookup_user_email(self, mock_request):
@@ -365,7 +349,7 @@ class TestBasketClient(unittest.TestCase):
         api_key = "There is only XUL!"
         email = "dana@example.com"
         lookup_user(email=email, api_key=api_key)
-        mock_request.assert_called_with("get", "lookup-user", params={"email": email}, headers={"x-api-key": api_key})
+        mock_request.assert_called_with("get", "users.lookup", params={"email": email}, headers={"x-api-key": api_key})
 
     @patch("basket.base.request")
     def test_lookup_user_email_setting(self, mock_request):
@@ -374,7 +358,7 @@ class TestBasketClient(unittest.TestCase):
         email = "dana@example.com"
         with patch("basket.base.BASKET_API_KEY", api_key):
             lookup_user(email=email)
-        mock_request.assert_called_with("get", "lookup-user", params={"email": email}, headers={"x-api-key": api_key})
+        mock_request.assert_called_with("get", "users.lookup", params={"email": email}, headers={"x-api-key": api_key})
 
     @patch("basket.base.request")
     def test_lookup_user_no_api_key(self, mock_request):
@@ -406,39 +390,11 @@ class TestBasketClient(unittest.TestCase):
             with patch.dict("os.environ", {"TESTING_SETTINGS": "WALTER"}):
                 self.assertEqual(get_env_or_setting("TESTING_SETTINGS"), "WALTER")
 
-    def test_start_email_change(self):
-        """
-        start_email_change() passes the expected args to request, and returns the result.
-        """
-        token = "TOKEN"
-        new_email = "NEW EMAIL"
-        with patch("basket.base.request", autospec=True) as request_call:
-            result = start_email_change(token, new_email)
-        request_call.assert_called_with("post", "start-email-change", token=token, data={"email": new_email})
-        self.assertEqual(request_call.return_value, result)
-
-    def test_confirm_email_change(self):
-        """
-        confirm_email_change() passes the expected args to request, and returns the result.
-        """
-        change_key = "CHANGE KEY"
-        with patch("basket.base.request", autospec=True) as request_call:
-            result = confirm_email_change(change_key)
-        request_call.assert_called_with("post", "confirm-email-change", token=change_key)
-        self.assertEqual(request_call.return_value, result)
-
     @patch("basket.base.request")
     def test_subscribe_source_ip(self, mock_request):
         subscribe("dude@example.com", "abiding-times", source_ip="1.1.1.1")
         mock_request.assert_called_with(
             "post", "subscribe", data={"email": "dude@example.com", "newsletters": "abiding-times"}, headers={"x-source-ip": "1.1.1.1"}
-        )
-
-    @patch("basket.base.request")
-    def test_send_sms_source_ip(self, mock_request):
-        send_sms("5558675309", "abide", source_ip="1.1.1.1")
-        mock_request.assert_called_with(
-            "post", "subscribe_sms", data={"mobile_number": "5558675309", "msg_name": "abide", "optin": "N"}, headers={"x-source-ip": "1.1.1.1"}
         )
 
     @patch("basket.base.requests")
