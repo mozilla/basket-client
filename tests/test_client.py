@@ -97,9 +97,9 @@ class TestBasketClient(unittest.TestCase):
         url = basket_url(action, token)
         with patch("basket.base.requests.request", autospec=True) as request_call:
             request_call.return_value = Mock(status_code=200, content=json.dumps(response_data), content_type="application/json")
-            result = request(method, action, data="DATA", token=token, params="PARAMS")
+            result = request(method, action, data="DATA", json={"json": True}, token=token, params="PARAMS")
 
-        request_call.assert_called_with(method, url, data="DATA", params="PARAMS", headers=None, timeout=ANY)
+        request_call.assert_called_with(method, url, data="DATA", json={"json": True}, params="PARAMS", headers=None, timeout=ANY)
         self.assertEqual(response_data, result)
 
     def test_request_newsletters_string(self):
@@ -115,7 +115,7 @@ class TestBasketClient(unittest.TestCase):
             request_call.return_value = Mock(status_code=200, content=json.dumps(content), content_type="application/json")
             result = request(method, action, data=input_data, token=token, params="PARAMS")
 
-        request_call.assert_called_with(method, url, data=input_data, params="PARAMS", headers=None, timeout=ANY)
+        request_call.assert_called_with(method, url, data=input_data, json=None, params="PARAMS", headers=None, timeout=ANY)
         self.assertEqual(content, result)
 
     def test_request_newsletters_non_string(self):
@@ -134,7 +134,7 @@ class TestBasketClient(unittest.TestCase):
             request_call.return_value = Mock(status_code=200, content=json.dumps(response_data), content_type="application/json")
             result = request(method, action, data=input_data, token=token, params="PARAMS")
 
-        request_call.assert_called_with(method, url, data=expected_input_data, params="PARAMS", headers=None, timeout=ANY)
+        request_call.assert_called_with(method, url, data=expected_input_data, json=None, params="PARAMS", headers=None, timeout=ANY)
         self.assertEqual(response_data, result)
 
     def test_request_conn_error(self):
@@ -334,7 +334,7 @@ class TestBasketClient(unittest.TestCase):
         with patch("basket.base.request", autospec=True) as mock_request:
             result = send_recovery_message(email)
         data = {"email": email}
-        mock_request.assert_called_with("post", "recover", data=data)
+        mock_request.assert_called_with("post", "users.recover", json=data)
         self.assertEqual(mock_request.return_value, result)
 
     @patch("basket.base.request")

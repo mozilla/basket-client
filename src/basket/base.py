@@ -36,6 +36,7 @@ BASKET_TIMEOUT = get_env_or_setting("BASKET_TIMEOUT", 10)
 URLS = {
     "news.newsletters": "/api/v1/news/newsletters/",
     "users.lookup": "/api/v1/users/lookup/",
+    "users.recover": "/api/v1/users/recover/",
 }
 
 
@@ -103,7 +104,7 @@ def parse_response(res):
     return result
 
 
-def request(method, action, data=None, token=None, params=None, headers=None):
+def request(method, action, data=None, json=None, token=None, params=None, headers=None):
     """Call the basket API with the supplied http method and data."""
     # send mock response for testing email addresses (bug 1261886)
     if data and "email" in data:
@@ -123,7 +124,7 @@ def request(method, action, data=None, token=None, params=None, headers=None):
         url = basket_url(action, token)
 
     try:
-        res = requests.request(method, url, data=data, params=params, headers=headers, timeout=BASKET_TIMEOUT)
+        res = requests.request(method, url, data=data, json=json, params=params, headers=headers, timeout=BASKET_TIMEOUT)
     except requests.exceptions.ConnectionError:
         raise BasketNetworkException("Error connecting to basket")
     except requests.exceptions.Timeout:
@@ -207,7 +208,7 @@ def lookup_user(email=None, token=None, api_key=None):
 
 def send_recovery_message(email):
     """Send recovery message for this email"""
-    return request("post", "recover", data={"email": email})
+    return request("post", "users.recover", json={"email": email})
 
 
 def get_newsletters():
